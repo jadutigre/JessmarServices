@@ -1,0 +1,96 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+ 
+<web-app>
+    <display-name>Servicios proxy para aplicacion android publica</display-name>
+    <!-- Auto scan REST service -->
+    <context-param>
+        <param-name>resteasy.scan</param-name>
+        <param-value>true</param-value>
+    </context-param>
+     
+    <servlet>
+        <servlet-name>resteasy-servlet</servlet-name>
+        <servlet-class>
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        </servlet-class>
+    </servlet>
+    
+    
+    
+ <!--Hook into spring security-->   
+<servlet>
+	<servlet-name>jersey-servlet</servlet-name>
+	<servlet-class>
+		org.glassfish.jersey.servlet.ServletContainer
+	</servlet-class>
+	<init-param>
+		<param-name>javax.ws.rs.Application</param-name>
+		<param-value>com.group.sunset.security.spring.RestDemoJaxRsApplication</param-value>
+	</init-param>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>jersey-servlet</servlet-name>
+	<url-pattern>/rest/*</url-pattern>
+</servlet-mapping>
+
+<filter>
+	<filter-name>springSecurityFilterChain</filter-name>
+	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+
+<!--<filter-mapping>
+  <filter-name>springSecurityFilterChain</filter-name>
+  <url-pattern>/app/*</url-pattern>
+</filter-mapping> -->
+<!--Final de Hook into spring security-->        
+    
+    
+    
+    
+    
+<!-- enable the Asynchronous Job Service -->
+    <context-param>
+        <param-name>resteasy.async.job.service.enabled</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- The next context parameters are all optional.  
+         Their default values are shown as example param-values -->
+
+    <!-- How many jobs results can be held in memory at once? -->
+    <context-param>
+        <param-name>resteasy.async.job.service.max.job.results</param-name>
+        <param-value>100</param-value>
+    </context-param>
+
+    <!-- Maximum wait time on a job when a client is querying for it -->
+    <context-param>
+        <param-name>resteasy.async.job.service.max.wait</param-name>
+        <param-value>300000</param-value>
+    </context-param>
+
+    <!-- Thread pool size of background threads that run the job -->
+    <context-param>
+        <param-name>resteasy.async.job.service.thread.pool.size</param-name>
+        <param-value>100</param-value>
+    </context-param>
+    
+    
+<listener>
+	<listener-class>
+             Tool.MyAppServletContextListener
+        </listener-class>
+   </listener>    
+    
+    
+    
+  
+    <servlet-mapping>
+        <servlet-name>resteasy-servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>

@@ -1,0 +1,58 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.group.sunset.entity.revinate;
+
+/**
+ *
+ * @author jdelgado
+ */
+public class PhoneNumbers
+{
+    private String phoneNumber;
+
+    private String primary;
+
+    public PhoneNumbers() {
+    }
+
+    public PhoneNumbers(String phoneNumber, String primary) {
+        this.phoneNumber = phoneNumber;
+        this.primary = primary;
+    }
+    
+    
+    
+    
+    
+    
+    
+
+    public String getPhoneNumber ()
+    {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber (String phoneNumber)
+    {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPrimary ()
+    {
+        return primary;
+    }
+
+    public void setPrimary (String primary)
+    {
+        this.primary = primary;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ClassPojo [phoneNumber = "+phoneNumber+", primary = "+primary+"]";
+    }
+}
