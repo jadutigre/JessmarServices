@@ -5,7 +5,6 @@
  */
 package com.group.sunset.groupsunsetpmsproxyservice;
 
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
