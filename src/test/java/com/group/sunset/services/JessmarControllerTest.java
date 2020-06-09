@@ -5,7 +5,8 @@
  */
 package com.group.sunset.services;
 
-import com.group.sunset.entity.Pedidos;
+import com.group.spcsystems.controllers.JessmarController;
+import com.group.spcsystems.entity.Pedidos;
 import java.util.List;
 import junit.framework.TestCase;
 
