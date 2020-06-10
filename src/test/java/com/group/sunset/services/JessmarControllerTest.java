@@ -34,13 +34,13 @@ public class JessmarControllerTest extends TestCase {
      * Test of getFacturasPorFecha method, of class JessmarController.
      */
     public void testGetFacturasPorFecha() {
-        System.out.println("getFacturasPorFecha");
-        JessmarController instance = new JessmarController();
-        List<Pedidos> expResult = null;
-        List<Pedidos> result = instance.getListaPedidos();
-        for (Pedidos pedidos : result) {
-            System.out.println(" "+pedidos.getId());
-        }
+//        System.out.println("getFacturasPorFecha");
+//        JessmarController instance = new JessmarController();
+//        List<Pedidos> expResult = null;
+//        List<Pedidos> result = instance.getListaPedidos();
+//        for (Pedidos pedidos : result) {
+//            System.out.println(" "+pedidos.getId());
+//        }
         //assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
