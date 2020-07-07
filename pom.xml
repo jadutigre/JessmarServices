@@ -88,11 +88,11 @@
       <artifactId>ReservasRCClienteServicioWeb</artifactId>
       <version>1.0.1</version>
     </dependency>-->
-    <dependency>
+<!--    <dependency>
       <groupId>com.group.sunset</groupId>
       <artifactId>java-rt-jar-stubs</artifactId>
       <version>1.0.1</version>
-    </dependency>    
+    </dependency>    -->
 <!--    <dependency>
       <groupId>com.group.sunset</groupId>
       <artifactId>SitWify</artifactId>
@@ -165,12 +165,12 @@
       <version>1.0.2</version>
       <type>jar</type>
     </dependency>-->
-    <dependency>
+<!--    <dependency>
       <groupId>com.group.spcsystems</groupId>
       <artifactId>JpaJessmar</artifactId>
       <version>1.0.0</version>
       <type>jar</type>
-    </dependency>
+    </dependency>-->
   </dependencies>
   <build>
     <plugins>
