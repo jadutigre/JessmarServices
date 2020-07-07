@@ -7,6 +7,7 @@ package com.group.spcsystems.groupsunsetpmsproxyservice;
 
 import com.group.spcsystems.entity.Pedidos;
 import com.group.spcsystems.controllers.JessmarController;
+import com.group.spcsystems.entity.Cattipopedido;
 import com.group.spcsystems.entity.Usuarios;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,26 @@ public class JessmarService {
           }
         
           return Response.status(200).entity(usuario).build(); 
+          
+    }  
+    
+    
+     @PermitAll 
+    @POST
+    @Path("/getCatalogoTipoPedido")
+    @Produces("application/json")
+    public Response getCatalogoTipoPedido() {  
+        
+          List<Cattipopedido> cattipopedido = new ArrayList<Cattipopedido>();
+          
+          try{
+              JessmarController controller = new JessmarController();
+            cattipopedido = controller.getCatalogoTipoPedido();
+          }catch(Exception ex){
+                 ex.printStackTrace();
+          }
+        
+          return Response.status(200).entity(cattipopedido).build(); 
           
     }  
     
