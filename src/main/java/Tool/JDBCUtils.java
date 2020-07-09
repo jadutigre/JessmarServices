@@ -64,7 +64,7 @@ public Connection connectDatabase() {
         // Database connect
         // Conectamos con la base de datos
         connection = DriverManager.getConnection(
-                "jdbc:mysql://173.243.120.250:3306/spcsyst1_jesmar?zeroDateTimeBehavior=convertToNull",
+                "jdbc:mysql://173.243.120.250:3306/spcsyst1_jesmar?zeroDateTimeBehavior=convertToNull&useSSL=false",
                 "spcsyst1", "36zqd6g");
         boolean valid = connection.isValid(50000);
         System.out.println(valid ? "TEST OK" : "TEST FAIL");
