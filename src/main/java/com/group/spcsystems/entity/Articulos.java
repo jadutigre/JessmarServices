@@ -28,10 +28,10 @@ public class Articulos {
     BigDecimal valoriva;
     BigDecimal valorutmin;
     BigDecimal valorutsug;
-    Grupo grupo_id;
-    Subgrupo subgrupo_id;
-    Almacen almacen_id;
-    Catunidadmedidas unidmed_id;
+    Integer grupo_id;
+    Integer subgrupo_id;
+    Integer almacen_id;
+    Integer unidmed_id;
     
     
     public Articulos(){
@@ -166,35 +166,35 @@ public class Articulos {
         this.valorutsug = valorutsug;
     }
 
-    public Grupo getGrupo_id() {
+    public Integer getGrupo_id() {
         return grupo_id;
     }
 
-    public void setGrupo_id(Grupo grupo_id) {
+    public void setGrupo_id(Integer grupo_id) {
         this.grupo_id = grupo_id;
     }
 
-    public Subgrupo getSubgrupo_id() {
+    public Integer getSubgrupo_id() {
         return subgrupo_id;
     }
 
-    public void setSubgrupo_id(Subgrupo subgrupo_id) {
+    public void setSubgrupo_id(Integer subgrupo_id) {
         this.subgrupo_id = subgrupo_id;
     }
 
-    public Almacen getAlmacen_id() {
+    public Integer getAlmacen_id() {
         return almacen_id;
     }
 
-    public void setAlmacen_id(Almacen almacen_id) {
+    public void setAlmacen_id(Integer almacen_id) {
         this.almacen_id = almacen_id;
     }
 
-    public Catunidadmedidas getUnidmed_id() {
+    public Integer getUnidmed_id() {
         return unidmed_id;
     }
 
-    public void setUnidmed_id(Catunidadmedidas unidmed_id) {
+    public void setUnidmed_id(Integer unidmed_id) {
         this.unidmed_id = unidmed_id;
     }
 
