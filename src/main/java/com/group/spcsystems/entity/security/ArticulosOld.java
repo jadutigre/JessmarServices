@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  *
  * @author mrivero
  */
-public class Articulos {
+public class ArticulosOld {
     
     Integer id;
     Boolean activo;
@@ -40,7 +40,7 @@ public class Articulos {
     BigDecimal valorutsug;
     String descripcion;
     
-    public Articulos() {}
+    public ArticulosOld() {}
 
     public Integer getId() {
         return id;

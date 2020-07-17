@@ -12,7 +12,7 @@ package com.group.spcsystems.entity;
 public class Pedidos {
     
        Integer id;
-       String  fechapedido;
+       String  fechapedido;             //Formato "yyyy-MM-dd HH:mm"
        String  usuario;
        Integer clientes_id;
        Integer vendedor_id;

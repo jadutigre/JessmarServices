@@ -15,10 +15,12 @@ import com.group.spcsystems.entity.Vendedores;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -26,6 +28,8 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.apache.commons.validator.GenericValidator;
 
 /**
  *
@@ -437,4 +441,135 @@ public Map<String, Object> getPedidoById(String id){
  }
 return resp;
 }
+
+String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?)";
+String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, fechapedido=?, usuario=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
+String  INSERT_PEDIDODETALLE = "INSERT INTO pedidos_detalle(version, cantidad, total, precio, articulo_id, pedido_id ) VALUES (?,?,?,?,?,?)";
+String  UPDATE_PEDIDODETALLE = "UPDATE pedidos_detalle SET version=?, cantidad=?, total=?, precio=?, articulo_id=?, pedido_id=? WHERE id=?";      
+        
+public Map<String, Object> insertaPedido(Map elpedido){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // paraa qyue obtenga el id
+    // Proceso el mapa del pedido y sus detalles.
+    // CABECERA
+       Integer id              =  elpedido.get("id") == null ? 0 :   (Integer)elpedido.get("id");  // si viene es update si no viene o es cero es insert
+       Integer clientes_id   =  elpedido.get("cliente_id") == null ? 0 : (Integer)elpedido.get("cliente_id") ;
+       Integer vendedor_id   =  elpedido.get("vendedor_id") == null ? 0 : (Integer)elpedido.get("vendedor_id");
+       Integer tipopedido_id =  elpedido.get("tipopedido_id") == null ? 0 : (Integer)elpedido.get("tipopedido_id");
+       String fechapedido      =  (String) elpedido.get("fechapedido");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String usuario          =  (String)elpedido.get("usuario");
+       String areaentrega      =  (String)elpedido.get("areaentrega");
+       List<Map<String, Object>> detalles = (List<Map<String, Object>>)elpedido.get("pedidosDetalle");
+       
+       if(clientes_id == 0){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "cliente_id invalido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       if(vendedor_id == 0){
+           resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "Vendedor_id invalido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       if(tipopedido_id == 0){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "tipopedido_id invalido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       if( ! GenericValidator.isDate(fechapedido, "yyyy-MM-dd HH:mm", true) ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "fecha invalida");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       if(usuario == null || usuario.length() == 0 ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "Usuario no valido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                dbCon.setAutoCommit(false);
+                QueryRunner queryRunner = new QueryRunner();
+                
+                 int numrows; 
+                 Long newid = 0L;
+                if( id != 0){ // Update
+                   numrows = queryRunner.update(dbCon, UPDATE_PEDIDOS , 0,fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega, id);
+                    payload.put("actualizados", numrows);
+                }
+                else{
+                   
+                     newid = queryRunner.insert(dbCon, INSERT_PEDIDOS , scalarHandler, 0, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega);
+                      payload.put("id", newid);
+                }
+                
+                // Procedo a insertar o actualizar los detalles del pedido
+               if(detalles != null && !detalles.isEmpty()){
+                  for(Map<String, Object> det : detalles){
+                        Integer elidDet =     det.get("id")          == null ? 0 : (Integer)det.get("id"); 
+                        Integer articulo_id = det.get("articulo_id") == null ? 0    : (Integer)det.get("articulo_id");                    
+                        Double cantidad =     det.get("cantidad")    == null ? 0.00 : (Double)det.get("cantidad");;
+                        Double precio =       det.get("precio")      == null ? 0.00 : (Double)det.get("precio");
+                        Double total =        det.get("total")       == null ? 0.00 : (Double)det.get("total");
+                        
+                        if(id == 0){  // Es  insercion de maestro, tambien inserto todos los detALLESdetalles
+                            queryRunner.insert(dbCon, INSERT_PEDIDODETALLE, scalarHandler , 0, cantidad, total, precio, articulo_id, newid);
+                        }else{ //actualizo detalles o inserto nuevos dependiend si traen o no su id
+                            if(elidDet ==  0){  // Inserto detlle
+                                queryRunner.insert(dbCon, INSERT_PEDIDODETALLE, scalarHandler , 0, cantidad, total, precio, articulo_id, id);
+                            }else{
+                                queryRunner.update(dbCon, UPDATE_PEDIDODETALLE, 0, cantidad, total, precio, articulo_id, id , elidDet);
+                            }
+                        }
+                        
+                   }
+               }
+                
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+    
+}
+
 }
