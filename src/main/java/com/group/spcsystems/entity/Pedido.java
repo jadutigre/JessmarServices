@@ -15,5 +15,23 @@ public class Pedido {
     Pedidos pedido;
     List<PedidosDetalle> detalles;
     
-            
+    public Pedido () {}
+
+    public Pedidos getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedidos pedido) {
+        this.pedido = pedido;
+    }
+
+    public List<PedidosDetalle> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<PedidosDetalle> detalles) {
+        this.detalles = detalles;
+    }
+       
+       
 }

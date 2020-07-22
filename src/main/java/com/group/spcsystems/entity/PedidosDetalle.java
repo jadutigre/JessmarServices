@@ -12,8 +12,8 @@ package com.group.spcsystems.entity;
 public class PedidosDetalle {
     
     Integer id;
-    Articulos articulo_id;
-    Pedido pedido_id;
+    Integer articulo_id;
+    Integer pedido_id;
     Double cantidad;
     Double precio;
     Double total;
@@ -29,19 +29,19 @@ public class PedidosDetalle {
         this.id = id;
     }
 
-    public Articulos getArticulo_id() {
+    public Integer getArticulo_id() {
         return articulo_id;
     }
 
-    public void setArticulo_id(Articulos articulo_id) {
+    public void setArticulo_id(Integer articulo_id) {
         this.articulo_id = articulo_id;
     }
 
-    public Pedido getPedido_id() {
+    public Integer getPedido_id() {
         return pedido_id;
     }
 
-    public void setPedido_id(Pedido pedido_id) {
+    public void setPedido_id(Integer pedido_id) {
         this.pedido_id = pedido_id;
     }
 
@@ -69,6 +69,6 @@ public class PedidosDetalle {
         this.total = total;
     }
 
-  
+   
     
 }
