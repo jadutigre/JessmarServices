@@ -5,6 +5,8 @@
  */
 package com.group.spcsystems.entity;
 
+import java.util.List;
+
 /**
  *
  * @author jadut
@@ -17,8 +19,10 @@ public class Pedidos {
        Integer clientes_id;
        Integer vendedor_id;
        Integer tipopedido_id;
-       String  areaentrega;       
-
+       String  areaentrega; 
+       
+       List<PedidosDetalle> pedido_detalle;
+       
     public Pedidos() {
     }
        
@@ -76,6 +80,14 @@ public class Pedidos {
 
     public void setAreaentrega(String areaentrega) {
         this.areaentrega = areaentrega;
+    }
+
+    public List<PedidosDetalle> getPedido_detalle() {
+        return pedido_detalle;
+    }
+
+    public void setPedido_detalle(List<PedidosDetalle> pedido_detalle) {
+        this.pedido_detalle = pedido_detalle;
     }
 
     
