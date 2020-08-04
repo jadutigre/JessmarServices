@@ -409,7 +409,14 @@ public Map<String, Object> getPedidoById(String id){
                 
                 pedido = queryRunner.query(dbCon, GET_PEDIDOBYID+id, new MapHandler() );
                 
+                
                 if(pedido != null &&  !pedido.isEmpty() ){ //  Proceso detalles
+                    
+                    // cambiop fecha a Styring
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                    String sfechapedido = sdf.format(pedido.get("fechapedido"));
+                    pedido.remove("fechapedido");
+                    pedido.put("fechapedido", sfechapedido);
                     
                     
                     pedidosdetalle = queryRunner.query(dbCon, GET_PEDIDOSDETALLE+id, new MapListHandler() );
