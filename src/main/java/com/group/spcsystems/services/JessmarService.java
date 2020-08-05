@@ -241,8 +241,10 @@ public class JessmarService {
     @POST
     @Path("/getPedidoById")
     @Produces("application/json")
-    @Consumes("application/x-www-form-urlencoded")
-    public Response getPedidoById( @FormParam("id") String id ) {  
+//    @Consumes("application/x-www-form-urlencoded")
+    public Response getPedidoById( 
+            @FormParam("id") String id
+    ) {  
       
         
           Map<String, Object> pedido = new HashMap<String, Object>();
