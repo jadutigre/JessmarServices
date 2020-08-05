@@ -289,4 +289,74 @@ public class JessmarService {
         
           return Response.status(200).entity(resp).build();
     }
+    
+    @PermitAll
+    @POST
+    @Path("/getOneClienteById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getOneClienteById( @FormParam("id") String id ){
+        
+           Clientes cliente = new Clientes();
+           Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              cliente = controller.getOneClienteById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(cliente).build(); 
+    }
+    
+    @PermitAll
+    @POST
+    @Path("/getOneVendedorById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getOneVendedorById( @FormParam("id") String id ){
+        
+           Vendedores vendedor = new Vendedores();
+           Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              vendedor = controller.getOneVendedorById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(vendedor).build(); 
+    }
+    
+    
+    @PermitAll
+    @POST
+    @Path("/getOneArticuloById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getOneArticuloById( @FormParam("id") String id ){
+        
+           Articulos articulo = new Articulos();
+           Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              articulo = controller.getOneArticuloById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(articulo).build(); 
+    }
 }

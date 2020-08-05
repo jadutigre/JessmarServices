@@ -579,4 +579,128 @@ public Map<String, Object> insertaPedido(Map elpedido){
     
 }
 
+String GET_CLIENTEBYID = "Select * from clientes where id = ";
+public Clientes getOneClienteById(String  id){
+      
+     Clientes   reng = null;
+     Connection dbCon = null;
+     try{
+
+            dbCon =   new JDBCUtils().connectDatabase();
+
+            QueryRunner run = new QueryRunner();
+
+                
+            ResultSetHandler<Clientes> h = new BeanHandler<Clientes>(Clientes.class);
+
+            
+            reng = run.query(dbCon, GET_CLIENTEBYID+id , h);
+
+     }catch ( SQLRecoverableException rec){
+
+                rec.printStackTrace();
+
+        }catch(Exception ex){
+            
+                ex.printStackTrace();
+                
+        }finally{
+         
+                if(dbCon!=null){
+                     try{
+                         dbCon.close();
+                     }catch(SQLException sqle){
+                             sqle.printStackTrace();
+                     }
+                 }
+
+        }
+
+    return reng;
+    
+}
+
+
+String GET_VENDEDORBYID = "Select * from vendedores where id = ";
+public Vendedores getOneVendedorById(String  id){
+      
+     Vendedores   reng = null;
+     Connection dbCon = null;
+     try{
+
+            dbCon =   new JDBCUtils().connectDatabase();
+
+            QueryRunner run = new QueryRunner();
+
+                
+            ResultSetHandler<Vendedores> h = new BeanHandler<Vendedores>(Vendedores.class);
+
+            
+            reng = run.query(dbCon, GET_VENDEDORBYID+id , h);
+
+     }catch ( SQLRecoverableException rec){
+
+                rec.printStackTrace();
+
+        }catch(Exception ex){
+            
+                ex.printStackTrace();
+                
+        }finally{
+         
+                if(dbCon!=null){
+                     try{
+                         dbCon.close();
+                     }catch(SQLException sqle){
+                             sqle.printStackTrace();
+                     }
+                 }
+
+        }
+
+    return reng;
+    
+}
+
+String GET_ARTICULOBYID = "Select * from articulos where id = ";
+public Articulos getOneArticuloById(String  id){
+      
+     Articulos   reng = null;
+     Connection dbCon = null;
+     try{
+
+            dbCon =   new JDBCUtils().connectDatabase();
+
+            QueryRunner run = new QueryRunner();
+
+                
+            ResultSetHandler<Articulos> h = new BeanHandler<Articulos>(Articulos.class);
+
+            
+            reng = run.query(dbCon, GET_ARTICULOBYID+id , h);
+
+     }catch ( SQLRecoverableException rec){
+
+                rec.printStackTrace();
+
+        }catch(Exception ex){
+            
+                ex.printStackTrace();
+                
+        }finally{
+         
+                if(dbCon!=null){
+                     try{
+                         dbCon.close();
+                     }catch(SQLException sqle){
+                             sqle.printStackTrace();
+                     }
+                 }
+
+        }
+
+    return reng;
+    
+}
+
 }
