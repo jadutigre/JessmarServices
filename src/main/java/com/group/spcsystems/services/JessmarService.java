@@ -64,6 +64,29 @@ public class JessmarService {
     
     @PermitAll 
     @POST
+    @Path("/getListaPedidosFull")
+    @Produces("application/json")
+    public Response getListaPedidosFull() {  
+        
+          Map<String, Object> pedidos = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+            pedidos = controller.getListaPedidoFull();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(pedidos).build(); 
+          
+    }  
+    
+    @PermitAll 
+    @POST
     @Path("/getListaUsuarios")
     @Produces("application/json")
     public Response getListaUsuarios() {  
@@ -239,6 +262,30 @@ public class JessmarService {
     
     @PermitAll 
     @POST
+    @Path("/getListaArticulosFull")
+    @Produces("application/json")
+    public Response getListaArticulosFull() {  
+        
+          Map<String, Object> articulos = new HashMap<String, Object>();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+            JessmarController controller = new JessmarController();
+            articulos = controller.getListaArticulosFull();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build(); 
+          }
+        
+          return Response.status(200).entity(articulos).build(); 
+          
+    } 
+    
+    
+    @PermitAll 
+    @POST
     @Path("/getPedidoById")
     @Produces("application/json")
 //    @Consumes("application/x-www-form-urlencoded")
@@ -361,4 +408,29 @@ public class JessmarService {
         
           return Response.status(200).entity(articulo).build(); 
     }
+    
+    
+    @PermitAll
+    @POST
+    @Path("/getOneArticuloByIdFull")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getOneArticuloByIdFull( @FormParam("id") String id ){
+        
+          
+           Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              resp = controller.getOneArticuloByIdFull(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(resp).build(); 
+    }
+    
 }

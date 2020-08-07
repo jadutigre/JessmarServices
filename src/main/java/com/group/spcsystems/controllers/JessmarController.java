@@ -71,6 +71,87 @@ public List<Pedidos> getListaPedidos(){
  }
 return listapedidos;
 }
+
+String  GET_LISTA_DE_PEDIDOS_FULL = "select p.id as id" +
+                                    ",p.fechapedido as fechapedido " +
+                                    ",p.usuario as usuario " +
+                                    ",p.areaentrega as areaentrega " +
+                                    ",tp.id as tipoPedidoId " +
+                                    ",tp.clave as tipoPedidoClave " +
+                                    ",tp.descripcion as tipoPedidoDescripcion " +
+                                    ",c.id as clienteId " +
+                                    ",c.nombre as clienteNombre " +
+                                    ",c.telefono as clienteTelefono " +
+                                    ",v.id as vendedorId " +
+                                    ",v.clave as vendedorClave " +
+                                    ",v.nombre as vendedorNombre " +
+                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
+                                    "where p.tipopedido_id = tp.id " +
+                                    "and p.clientes_id = c.id " +
+                                    "and p.vendedor_id = v.id " +
+                                    "order by p.id  desc ";
+public Map<String, Object> getListaPedidoFull(){
+    
+     Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+   List<Map<String, Object>> listapedidos = new ArrayList<Map<String, Object>>();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL, new MapListHandler() );
+                
+                //procesdo  la fecha
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                for (Map<String, Object> pedido : listapedidos) {
+                    String sfechapedido = sdf.format(pedido.get("fechapedido"));
+                    pedido.remove("fechapedido");
+                    pedido.put("fechapedido", sfechapedido);
+                }
+                 
+                   
+                    
+                
+                if(listapedidos == null || listapedidos.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listapedidos);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
     
 String  GET_LISTA_DE_USUARIOS = "select * from usuarios order by id desc";
     
@@ -383,8 +464,113 @@ public Map<String, Object> getListaArticulos(){
 
 }
 
-String  GET_PEDIDOBYID = "select * from pedidos where id =";
-String  GET_PEDIDOSDETALLE = "select * from pedidos_detalle where pedido_id =";
+
+String GET_LISTAARTICULOS_FULL =  "select a.id as id " +
+                                ",a.lugar as lugar " +
+                                ",a.valoriva as valorIva " +
+                                ",a.pcio1 as precio1 " +
+                                ",a.pcio2 as precio2 " +
+                                ",a.pcio3 as precio3 " +
+                                ",a.pcio4 as precio4 " +
+                                ",a.parte as parte " +
+                                ",a.estatus as estatus " +
+                                ",a.codant as codAnt " +
+                                ",a.minimo as minimo " +
+                                ",a.valorutmin as valorUtMin " +
+                                ",a.maximo as maximo " +
+                                ",a.codigo as codigo " +
+                                ",a.valorutsug as valorUtSug " +
+                                ",a.descripcion as descripcion " +
+                                ",a.activo as activo " +
+                                ",g.id as grupoId " +
+                                ",g.clave as grupoClave " +
+                                ",g.descripcion as grupoDescripcion " +
+                                ",sg.id as subgrupoId " +
+                                ",sg.clave as subgrupoClave " +
+                                ",sg.descripcion as subgrupoDescripcion " +
+                                ",um.id as unidaMedidaId " +
+                                ",um.clave as unidadMedidaClave " +
+                                ",um.descripcion as unidadMedidaDescripcion " +
+                                ",al.id as almacenId " +
+                                ",al.clave as almacenClave " +
+                                ",al.descripcion as almacenDescripcion " +
+                                "from articulos a, grupo g, subgrupo sg, catunidadmedidas um, almacen al " +
+                                "where  a.grupo_id = g.id " +
+                                "and a.subgrupo_id = sg.id " +
+                                "and a.unidmed_id = um.id " +
+                                "and a.almacen_id = al.id " +
+                                "order by a.descripcion asc";
+
+public Map<String, Object> getListaArticulosFull(){
+Connection dbCon = null;
+Map<String, Object> resp = new HashMap<String, Object> ();
+List<Map<String, Object>> listaarticulos = new ArrayList<Map<String, Object>>();
+ 
+ try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                listaarticulos = queryRunner.query(dbCon, GET_LISTAARTICULOS_FULL, new MapListHandler() );
+                
+                if(listaarticulos == null || listaarticulos.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listaarticulos);
+                }
+
+ }catch(Exception e){
+                e.printStackTrace();
+ }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                 }
+             }
+            
+ }
+ return resp;
+
+}
+
+
+
+String  GET_PEDIDOBYID =            "select p.id as id" +
+                                    ",p.fechapedido as fechapedido " +
+                                    ",p.usuario as usuario " +
+                                    ",p.areaentrega as areaentrega " +
+                                    ",tp.id as tipoPedidoId " +
+                                    ",tp.clave as tipoPedidoClave " +
+                                    ",tp.descripcion as tipoPedidoDescripcion " +
+                                    ",c.id as clienteId " +
+                                    ",c.nombre as clienteNombre " +
+                                    ",c.telefono as clienteTelefono " +
+                                    ",v.id as vendedorId " +
+                                    ",v.clave as vendedorClave " +
+                                    ",v.nombre as vendedorNombre " +
+                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
+                                    "where p.tipopedido_id = tp.id " +
+                                    "and p.clientes_id = c.id " +
+                                    "and p.vendedor_id = v.id " +
+                                    "and p.id = ";
+
+
+String  GET_PEDIDOSDETALLE =    "select pd.id as id " +
+                                ",pd.cantidad as cantidad " +
+                                ",pd.total as total " +
+                                ",pd.precio as precio " +
+                                ",a.id as articuloId " +
+                                ",a.codigo as articuloCodigo " +
+                                ",a.descripcion as articuloDescripcion " +
+                                "from pedidos_detalle pd, articulos a " +
+                                " where pd.articulo_id = a.id " +
+                                " and pedido_id = ";
 
 public Map<String, Object> getPedidoById(String id){
  System.out.println("getPedidoById con id " + id );
@@ -701,6 +887,99 @@ public Articulos getOneArticuloById(String  id){
 
     return reng;
     
+}
+
+
+String GET_ARTICULOBYID_FULL =  "select a.id as id " +
+                                ",a.lugar as lugar " +
+                                ",a.valoriva as valorIva " +
+                                ",a.pcio1 as precio1 " +
+                                ",a.pcio2 as precio2 " +
+                                ",a.pcio3 as precio3 " +
+                                ",a.pcio4 as precio4 " +
+                                ",a.parte as parte " +
+                                ",a.estatus as estatus " +
+                                ",a.codant as codAnt " +
+                                ",a.minimo as minimo " +
+                                ",a.valorutmin as valorUtMin " +
+                                ",a.maximo as maximo " +
+                                ",a.codigo as codigo " +
+                                ",a.valorutsug as valorUtSug " +
+                                ",a.descripcion as descripcion " +
+                                ",a.activo as activo " +
+                                ",g.id as grupoId " +
+                                ",g.clave as grupoClave " +
+                                ",g.descripcion as grupoDescripcion " +
+                                ",sg.id as subgrupoId " +
+                                ",sg.clave as subgrupoClave " +
+                                ",sg.descripcion as subgrupoDescripcion " +
+                                ",um.id as unidaMedidaId " +
+                                ",um.clave as unidadMedidaClave " +
+                                ",um.descripcion as unidadMedidaDescripcion " +
+                                ",al.id as almacenId " +
+                                ",al.clave as almacenClave " +
+                                ",al.descripcion as almacenDescripcion " +
+                                "from articulos a, grupo g, subgrupo sg, catunidadmedidas um, almacen al " +
+                                "where  a.grupo_id = g.id " +
+                                "and a.subgrupo_id = sg.id " +
+                                "and a.unidmed_id = um.id " +
+                                "and a.almacen_id = al.id " +
+                                "and a.id = ";
+public Map<String, Object> getOneArticuloByIdFull(String  id){
+    
+   Connection dbCon = null;
+   Map<String, Object> resp = new HashMap<String, Object> ();
+   Map<String, Object> articulo = new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                articulo = queryRunner.query(dbCon, GET_ARTICULOBYID_FULL+ id , new MapHandler() );
+                
+               
+                 
+                   
+                    
+                
+                if(articulo == null || articulo.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", articulo);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
 }
 
 }
