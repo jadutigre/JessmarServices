@@ -11,7 +11,6 @@ import com.group.spcsystems.controllers.JessmarController;
 import com.group.spcsystems.entity.Articulos;
 import com.group.spcsystems.entity.Cattipopedido;
 import com.group.spcsystems.entity.Clientes;
-import com.group.spcsystems.entity.Pedido;
 import com.group.spcsystems.entity.Usuarios;
 import com.group.spcsystems.entity.Vendedores;
 import java.util.ArrayList;
@@ -21,13 +20,10 @@ import java.util.Map;
 import java.io.IOException;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
