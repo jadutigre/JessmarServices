@@ -76,15 +76,15 @@ String  GET_LISTA_DE_PEDIDOS_FULL = "select p.id as id" +
                                     ",p.fechapedido as fechapedido " +
                                     ",p.usuario as usuario " +
                                     ",p.areaentrega as areaentrega " +
-                                    ",tp.id as tipoPedidoId " +
+                                    ",tp.id as tipopedido_id " +
                                     ",tp.clave as tipoPedidoClave " +
-                                    ",tp.descripcion as tipoPedidoDescripcion " +
-                                    ",c.id as clienteId " +
-                                    ",c.nombre as clienteNombre " +
+                                    ",tp.descripcion as tipopedidodescripcion " +
+                                    ",c.id as clientes_id " +
+                                    ",c.nombre as clientenombre " +
                                     ",c.telefono as clienteTelefono " +
-                                    ",v.id as vendedorId " +
+                                    ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
-                                    ",v.nombre as vendedorNombre " +
+                                    ",v.nombre as vendedornombre " +
                                     "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
                                     "where p.tipopedido_id = tp.id " +
                                     "and p.clientes_id = c.id " +
@@ -545,15 +545,15 @@ String  GET_PEDIDOBYID =            "select p.id as id" +
                                     ",p.fechapedido as fechapedido " +
                                     ",p.usuario as usuario " +
                                     ",p.areaentrega as areaentrega " +
-                                    ",tp.id as tipoPedidoId " +
+                                    ",tp.id as tipopedido_id " +
                                     ",tp.clave as tipoPedidoClave " +
-                                    ",tp.descripcion as tipoPedidoDescripcion " +
-                                    ",c.id as clienteId " +
-                                    ",c.nombre as clienteNombre " +
+                                    ",tp.descripcion as tipopedidodescripcion " +
+                                    ",c.id as clientes_id " +
+                                    ",c.nombre as clientenombre " +
                                     ",c.telefono as clienteTelefono " +
-                                    ",v.id as vendedorId " +
+                                    ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
-                                    ",v.nombre as vendedorNombre " +
+                                    ",v.nombre as vendedornombre " +
                                     "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
                                     "where p.tipopedido_id = tp.id " +
                                     "and p.clientes_id = c.id " +
@@ -565,9 +565,10 @@ String  GET_PEDIDOSDETALLE =    "select pd.id as id " +
                                 ",pd.cantidad as cantidad " +
                                 ",pd.total as total " +
                                 ",pd.precio as precio " +
-                                ",a.id as articuloId " +
+                                ",pd.pedido_id as pedido_id"+
+                                ",a.id as articulo_id " +
                                 ",a.codigo as articuloCodigo " +
-                                ",a.descripcion as articuloDescripcion " +
+                                ",a.descripcion as articulodescripcion " +
                                 "from pedidos_detalle pd, articulos a " +
                                 " where pd.articulo_id = a.id " +
                                 " and pedido_id = ";
@@ -649,13 +650,13 @@ public Map<String, Object> insertaPedido(Map elpedido){
     // Proceso el mapa del pedido y sus detalles.
     // CABECERA
        Integer id              =  elpedido.get("id") == null ? 0 :   (Integer)elpedido.get("id");  // si viene es update si no viene o es cero es insert
-       Integer clientes_id   =  elpedido.get("cliente_id") == null ? 0 : (Integer)elpedido.get("cliente_id") ;
+       Integer clientes_id   =  elpedido.get("clientes_id") == null ? 0 : (Integer)elpedido.get("clientes_id") ;
        Integer vendedor_id   =  elpedido.get("vendedor_id") == null ? 0 : (Integer)elpedido.get("vendedor_id");
        Integer tipopedido_id =  elpedido.get("tipopedido_id") == null ? 0 : (Integer)elpedido.get("tipopedido_id");
        String fechapedido      =  (String) elpedido.get("fechapedido");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
        String usuario          =  (String)elpedido.get("usuario");
        String areaentrega      =  (String)elpedido.get("areaentrega");
-       List<Map<String, Object>> detalles = (List<Map<String, Object>>)elpedido.get("pedidosDetalle");
+       List<Map<String, Object>> detalles = (List<Map<String, Object>>)elpedido.get("pedidosdetalle");
        
        if(clientes_id == 0){
             resp.put("success", Boolean.FALSE);

@@ -312,8 +312,13 @@ public class JessmarService {
     @POST
     @Path("/insertaPedido")
     @Produces("application/json")
-    @Consumes("application/json")
-    public Response insertaPedido(String json){
+    @Consumes("application/x-www-form-urlencoded")
+    public Response insertaPedido(
+            @FormParam("json") String json
+    ){
+        
+            System.out.println(json);
+            //json = json.replace("json=", "");
         
             Map<String, Object> resp = new HashMap<String, Object> ();
             ObjectMapper mapper = new ObjectMapper();
@@ -324,6 +329,7 @@ public class JessmarService {
                 Map<String, Object> mapa = mapper.readValue(json, Map.class);
                 resp = controller.insertaPedido(mapa);
             }catch(IOException e){
+                e.printStackTrace();
                 resp.put("success", Boolean.FALSE);
                 resp.put("erromsg", e.getMessage());
                 resp.put("payload", null);
