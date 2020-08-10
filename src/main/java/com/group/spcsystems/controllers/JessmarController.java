@@ -10,6 +10,7 @@ import com.group.spcsystems.entity.Articulos;
 import com.group.spcsystems.entity.Cattipopedido;
 import com.group.spcsystems.entity.Clientes;
 import com.group.spcsystems.entity.Pedidos;
+import com.group.spcsystems.entity.PedidosDetalle;
 import com.group.spcsystems.entity.Usuarios;
 import com.group.spcsystems.entity.Vendedores;
 import java.sql.Connection;
@@ -981,6 +982,67 @@ public Map<String, Object> getOneArticuloByIdFull(String  id){
        
        
     return resp;
+}
+
+
+String GET_LISTADETALLEPEDIOBYIDPEDIDO =    "SELECT pd.id " +
+                                            ", cantidad " +
+                                            ",total " +
+                                            ",precio " +
+                                            ",a.id as articulo_id " +
+                                            ",a.descripcion as articulo_descripcion " +
+                                            "from " +
+                                            "pedidos_detalle pd, articulos a  " +
+                                            "where pd.pedido_id = a.id " +
+                                            "and pd.pedido_id  = ";
+public Map<String, Object> getListaPedidoDetalleByIdPedido(String id){
+   Connection dbCon = null;
+   List<Map<String, Object>> pedidodetalle =  new ArrayList<Map<String, Object>>();
+   Map<String, Object>  resp = new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                pedidodetalle = queryRunner.query(dbCon, GET_LISTADETALLEPEDIOBYIDPEDIDO+ id , new MapListHandler() );
+                                         
+                if(pedidodetalle == null || pedidodetalle.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", pedidodetalle);
+                }
+                
+                       
+               
+        }catch(Exception e){        
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+
 }
 
 }
