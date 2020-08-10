@@ -458,4 +458,27 @@ public class JessmarService {
           return Response.status(200).entity(resp).build(); 
     }
     
+    
+    @PermitAll
+    @POST
+    @Path("/deletePedidoDetalleById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response deletePedidoDetalleById( @FormParam("id") String id ){
+        
+          
+           Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              resp = controller.deletePedidoDetalleById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(resp).build(); 
+    }
 }

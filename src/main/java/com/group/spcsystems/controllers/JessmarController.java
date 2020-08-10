@@ -1045,4 +1045,56 @@ public Map<String, Object> getListaPedidoDetalleByIdPedido(String id){
 
 }
 
+
+String DETELEPEDIDOBYID =    "DELETE FROM pedidos_detalle WHERE id = ";
+public Map<String, Object> deletePedidoDetalleById(String id){
+   Connection dbCon = null;
+   int resultadoSQL ;
+   Map<String, Object>  resp = new HashMap<String, Object> ();
+   Map<String, Integer>  registrosborrados = new HashMap<String, Integer> ();
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                resultadoSQL = queryRunner.update(dbCon, DETELEPEDIDOBYID+ id  );
+                                         
+               registrosborrados.put("Registros Borrados", resultadoSQL);
+               if(resultadoSQL == 0 ){
+                   resp.put("success", Boolean.FALSE);
+               }else{
+                   resp.put("success", Boolean.TRUE);
+               }
+               
+               resp.put("erromsg", null);
+               resp.put("payload", registrosborrados);
+                
+                
+                       
+               
+        }catch(Exception e){        
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+
+}
 }
