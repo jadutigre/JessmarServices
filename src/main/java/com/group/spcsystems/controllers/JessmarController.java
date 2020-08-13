@@ -989,11 +989,12 @@ String GET_LISTADETALLEPEDIOBYIDPEDIDO =    "SELECT pd.id " +
                                             ", cantidad " +
                                             ",total " +
                                             ",precio " +
+                                            ",pedido_id "+
                                             ",a.id as articulo_id " +
-                                            ",a.descripcion as articulo_descripcion " +
+                                            ",a.descripcion as articulodescripcion " +
                                             "from " +
                                             "pedidos_detalle pd, articulos a  " +
-                                            "where pd.pedido_id = a.id " +
+                                            "where pd.articulo_id = a.id " +
                                             "and pd.pedido_id  = ";
 public Map<String, Object> getListaPedidoDetalleByIdPedido(String id){
    Connection dbCon = null;
