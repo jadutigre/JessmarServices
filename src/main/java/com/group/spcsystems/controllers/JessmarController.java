@@ -1098,4 +1098,176 @@ public Map<String, Object> deletePedidoDetalleById(String id){
     return resp;
 
 }
+
+
+String  INSERT_CLIENTE = "INSERT INTO clientes(version, iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+String  UPDATE_CLIENTE = "UPDATE clientes SET version=?, iva=?, telefono=?, rfc=?, nombre=?, email=?, observ=?, direccion=?, ciudad=?, nucta=?, diascred=? WHERE id=?";
+/**
+ *  Metodo que inserta o actualiza a un cliente.
+ * @param elcliente
+ * @return 
+ */
+public Map<String, Object> insertaCliente(Map elcliente){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // para qyue obtenga el id
+ 
+    Integer id          = elcliente.get("id")       == null ? 0    : (Integer)elcliente.get("id");  // si viene es update si no viene o es cero es insert
+    Double  iva         = elcliente.get("iva")      == null ? 0.0  : (Double) elcliente.get("iva");
+    String  telefono    = elcliente.get("telefono") == null ? null : (String)elcliente.get("telefono");
+    String  rfc         = elcliente.get("rfc")      == null ? null : (String)elcliente.get("rfc");
+    String  nombre      = elcliente.get("nombre")   == null ? null : (String)elcliente.get("nombre");
+    String  email       = elcliente.get("email")    == null ? null : (String)elcliente.get("email");    
+    String  observ      = elcliente.get("observ")   == null ? null : (String)elcliente.get("observ");  
+    String  direccion   = elcliente.get("direccion")== null ? null : (String)elcliente.get("direccion");
+    String  ciudad      = elcliente.get("ciudad")   == null ? null : (String)elcliente.get("ciudad");
+    Integer nucta      = elcliente.get("nucta")     == null ? 0    : (Integer)elcliente.get("nucta"); 
+    Integer diascred    = elcliente.get("diascred") == null ? 0    : (Integer)elcliente.get("diascred"); 
+       
+
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                QueryRunner queryRunner = new QueryRunner();
+               
+        
+                int numrows; 
+                Long newid = 0L;
+                if( id != 0){ // Update
+                    numrows = queryRunner.update(dbCon, UPDATE_CLIENTE , 0, iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred, id );
+                    payload.put("actualizados", numrows);
+                }
+                else{                  
+                     newid = queryRunner.insert(dbCon, INSERT_CLIENTE , scalarHandler, 0,  iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred );
+                      payload.put("id", newid);
+                }
+                
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+    return resp;
+    
+}
+
+
+
+
+String  INSERT_ARTICULO = "INSERT INTO articulos(version,   lugar,   grupo_id,   subgrupo_id,   unidmed_id,   almacen_id,   valoriva,   pcio4,   pcio3,   pcio2,   pcio1,   parte,  estatus,   codant,   minimo,   maximo,   codigo,   valorutmin,   valorutsug,   descripcion,   activo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+String  UPDATE_ARTICULO = "UPDATE articulos  SET version=?, lugar=?, grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=?, estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=? WHERE id=?";
+/**
+ *  Metodo que inserta o actualiza a un articulo.
+ * @param elarticulo
+ * @return 
+ */
+public Map<String, Object> insertaArticulo(Map elarticulo){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // para qyue obtenga el id
+ 
+    Integer id          = elarticulo.get("id")              == null ? 0     : (Integer)elarticulo.get("id");  // si viene es update si no viene o es cero es insert
+    String  lugar       = elarticulo.get("lugar")           == null ? ""   : (String)elarticulo.get("lugar");
+    Integer grupo_id    = elarticulo.get("grupo_id")        == null ? 0     : (Integer)elarticulo.get("grupo_id"); 
+    Integer subgrupo_id = elarticulo.get("subgrupo_id")     == null ? 0     : (Integer)elarticulo.get("subgrupo_id"); 
+    Integer unidmed_id  = elarticulo.get("unidmed_id")      == null ? 0     : (Integer)elarticulo.get("unidmed_id"); 
+    Integer almacen_id  = elarticulo.get("almacen_id")      == null ? 0     : (Integer)elarticulo.get("almacen_id"); 
+    Double  valoriva    = elarticulo.get("valoriva")        == null ? 0.0   : (Double)elarticulo.get("valoriva"); 
+    Double  pcio4       = elarticulo.get("pcio4")           == null ? 0.0   : (Double)elarticulo.get("pcio4");
+    Double  pcio3       = elarticulo.get("pcio3")           == null ? 0.0   : (Double)elarticulo.get("pcio3");
+    Double  pcio2       = elarticulo.get("pcio2")           == null ? 0.0   : (Double)elarticulo.get("pcio2");
+    Double  pcio1       = elarticulo.get("pcio1")           == null ? 0.0   : (Double)elarticulo.get("pcio1");
+    String  parte       = elarticulo.get("parte")           == null ? ""   : (String)elarticulo.get("parte");
+    String  estatus     = elarticulo.get("estatus")         == null ? ""   : (String)elarticulo.get("estatus");
+    String  codant      = elarticulo.get("codant")          == null ? ""   : (String)elarticulo.get("codant");
+    Double  minimo      = elarticulo.get("minimo")          == null ? 0.0   : (Double)elarticulo.get("minimo");
+    Double  maximo      = elarticulo.get("maximo")          == null ? 0.0   : (Double)elarticulo.get("maximo");
+    String  codigo      = elarticulo.get("codigo")          == null ? ""   : (String)elarticulo.get("codigo");
+    Double  valorutmin  = elarticulo.get("valorutmin")      == null ? 0.0   : (Double)elarticulo.get("valorutmin");
+    Double  valorutsug  = elarticulo.get("valorutsug")      == null ? 0.0   : (Double)elarticulo.get("valorutsug");
+    String  descripcion = elarticulo.get("descripcion")     == null ? ""   : (String)elarticulo.get("descripcion");
+    Boolean activo      = elarticulo.get("activo")          == null ? false : (Boolean)elarticulo.get("activo");
+    
+ 
+       
+
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                QueryRunner queryRunner = new QueryRunner();
+               
+    
+                int numrows; 
+                Long newid = 0L;
+                if( id != 0){ // Update
+                   // String  UPDATE_ARTICULO = "UPDATE articulos     SET version=?, lugar=?,     grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=? estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=? WHERE id=?";
+                    numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo,  id );
+                    payload.put("actualizados", numrows);
+                }
+                else{                  
+                     newid = queryRunner.insert(dbCon, INSERT_ARTICULO , scalarHandler, 0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo );
+                      payload.put("id", newid);
+                }
+                
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+    return resp;
+    
+}
+
 }
