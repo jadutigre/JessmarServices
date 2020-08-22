@@ -480,6 +480,8 @@ String GET_LISTAARTICULOS_FULL =  "select a.id as id " +
                                 ",a.valorutmin as valorUtMin " +
                                 ",a.maximo as maximo " +
                                 ",a.codigo as codigo " +
+                                ",a.cvesat "+
+                                ",a.unidadsat "+
                                 ",a.valorutsug as valorUtSug " +
                                 ",a.descripcion as descripcion " +
                                 ",a.activo as activo " +
@@ -1180,8 +1182,8 @@ public Map<String, Object> insertaCliente(Map elcliente){
 
 
 
-String  INSERT_ARTICULO = "INSERT INTO articulos(version,   lugar,   grupo_id,   subgrupo_id,   unidmed_id,   almacen_id,   valoriva,   pcio4,   pcio3,   pcio2,   pcio1,   parte,  estatus,   codant,   minimo,   maximo,   codigo,   valorutmin,   valorutsug,   descripcion,   activo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-String  UPDATE_ARTICULO = "UPDATE articulos  SET version=?, lugar=?, grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=?, estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=? WHERE id=?";
+String  INSERT_ARTICULO = "INSERT INTO articulos(version,   lugar,   grupo_id,   subgrupo_id,   unidmed_id,   almacen_id,   valoriva,   pcio4,   pcio3,   pcio2,   pcio1,   parte,  estatus,   codant,   minimo,   maximo,   codigo,   valorutmin,   valorutsug,   descripcion,   activo, cvesat, unidadsat) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+String  UPDATE_ARTICULO = "UPDATE articulos  SET version=?, lugar=?, grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=?, estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=?, cvesat=?,unidadsat=? WHERE id=?";
 /**
  *  Metodo que inserta o actualiza a un articulo.
  * @param elarticulo
@@ -1215,6 +1217,8 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
     Double  valorutsug  = elarticulo.get("valorutsug")      == null ? 0.0   : (Double)elarticulo.get("valorutsug");
     String  descripcion = elarticulo.get("descripcion")     == null ? ""   : (String)elarticulo.get("descripcion");
     Boolean activo      = elarticulo.get("activo")          == null ? false : (Boolean)elarticulo.get("activo");
+    String  cvesat      = elarticulo.get("cvesat")          == null ? ""   : (String)elarticulo.get("cvesat");
+    String  unidadsat      = elarticulo.get("unidadsat")          == null ? ""   : (String)elarticulo.get("unidadsat");
     
  
        
@@ -1231,11 +1235,11 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
                 Long newid = 0L;
                 if( id != 0){ // Update
                    // String  UPDATE_ARTICULO = "UPDATE articulos     SET version=?, lugar=?,     grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=? estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=? WHERE id=?";
-                    numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo,  id );
+                    numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat,  id );
                     payload.put("actualizados", numrows);
                 }
                 else{                  
-                     newid = queryRunner.insert(dbCon, INSERT_ARTICULO , scalarHandler, 0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo );
+                     newid = queryRunner.insert(dbCon, INSERT_ARTICULO , scalarHandler, 0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat );
                       payload.put("id", newid);
                 }
                 
