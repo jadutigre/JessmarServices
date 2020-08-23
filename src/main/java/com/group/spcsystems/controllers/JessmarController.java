@@ -1234,7 +1234,7 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
                 int numrows; 
                 Long newid = 0L;
                 if( id != 0){ // Update
-                   // String  UPDATE_ARTICULO = "UPDATE articulos     SET version=?, lugar=?,     grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=? estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=? WHERE id=?";
+                  
                     numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat,  id );
                     payload.put("actualizados", numrows);
                 }
@@ -1272,6 +1272,138 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
        
     return resp;
     
+}
+
+
+String  INSERT_VENDEDOR = "INSERT INTO vendedores (version, activo, clave, nombre)  VALUES(?,?,?,?)";
+String  UPDATE_VENDEDOR = "UPDATE vendedores SET version=?, activo=?, clave=?, nombre=? WHERE id=?";
+/**
+ *  Metodo que inserta o actualiza a un cliente.
+ * @param elvendedor
+ * @return si insert regreso el id nuevo, sui update, regreso el numero de registros actualizados, usualmente 1
+ */
+public Map<String, Object> insertaVendedor(Map elvendedor){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // para qyue obtenga el id
+ 
+    Integer id      = elvendedor.get("id")      == null ? 0     : (Integer)elvendedor.get("id");  // si viene es update si no viene o es cero es insert
+    Boolean activo  = elvendedor.get("activo")  == null ? false : (Boolean)elvendedor.get("activo");
+    String  clave   = elvendedor.get("clave")   == null ? null  : (String) elvendedor.get("clave");
+    String  nombre  = elvendedor.get("nombre")  == null ? null  : (String) elvendedor.get("nombre");
+    
+       
+
+       
+       //Procedo a grabar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                QueryRunner queryRunner = new QueryRunner();
+               
+        
+                int numrows; 
+                Long newid = 0L;
+                if( id != 0){ // Update
+                    numrows = queryRunner.update(dbCon, UPDATE_VENDEDOR , 0, activo, clave, nombre,  id );
+                    payload.put("actualizados", numrows);
+                }
+                else{                  
+                    newid = queryRunner.insert(dbCon, INSERT_VENDEDOR , scalarHandler, 0,  activo, clave,  nombre );
+                    payload.put("id", newid);
+                }
+                
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+    return resp;
+    
+}
+
+
+String  GET_LISTA_UNIDADES_MEDIDA = "SELECT id, clave, descripcion FROM catunidadmedidas";
+                                    
+public Map<String, Object> getCatalogoUnidadesMedida(){
+    
+     Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+   List<Map<String, Object>> listaUdeM = new ArrayList<Map<String, Object>>();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                listaUdeM = queryRunner.query(dbCon, GET_LISTA_UNIDADES_MEDIDA, new MapListHandler() );
+                
+              
+                 
+                   
+                    
+                
+                if(listaUdeM == null || listaUdeM.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listaUdeM);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
 }
 
 }

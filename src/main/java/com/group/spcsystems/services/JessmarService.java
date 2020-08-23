@@ -551,4 +551,61 @@ public class JessmarService {
           return Response.status(200).entity(resp).build();
     }
     
+    
+    @PermitAll
+    @POST
+    @Path("/insertaVendedor")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response insertaVendedor(
+            @FormParam("json") String json
+    ){
+        
+            System.out.println(json);
+           
+        
+            Map<String, Object> resp = new HashMap<String, Object> ();
+            ObjectMapper mapper = new ObjectMapper();
+            
+            
+            try{
+                JessmarController controller = new JessmarController();
+                Map<String, Object> mapa = mapper.readValue(json, Map.class);
+                resp = controller.insertaVendedor(mapa);
+            }catch(IOException e){
+                e.printStackTrace();
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", e.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build(); 
+            }
+        
+             
+        
+          return Response.status(200).entity(resp).build();
+    }
+    
+    
+        @PermitAll 
+    @POST
+    @Path("/getCatalogoUnidadesMedida")
+    @Produces("application/json")
+    public Response getCatalogoUnidadesMedida() {  
+        
+          Map<String, Object> pedidos = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+            pedidos = controller.getCatalogoUnidadesMedida();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(pedidos).build(); 
+          
+    }
 }
