@@ -1406,4 +1406,65 @@ public Map<String, Object> getCatalogoUnidadesMedida(){
     return resp;
 }
 
+
+String GET_UNIDAD_MEDIDA_BY_ID = "SELECT id, clave, descripcion FROM catunidadmedidas where id = ";
+
+public Map<String, Object> getUnidadMedidaById(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> unidadMedida= new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                unidadMedida = queryRunner.query(dbCon, GET_UNIDAD_MEDIDA_BY_ID+ id, new MapHandler() );
+                
+              
+                 
+                   
+                    
+                
+                if(unidadMedida == null || unidadMedida.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", unidadMedida);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+
 }
