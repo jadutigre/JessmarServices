@@ -11,6 +11,7 @@ import com.group.spcsystems.controllers.JessmarController;
 import com.group.spcsystems.entity.Articulos;
 import com.group.spcsystems.entity.Cattipopedido;
 import com.group.spcsystems.entity.Clientes;
+import com.group.spcsystems.entity.Estados;
 import com.group.spcsystems.entity.Usuarios;
 import com.group.spcsystems.entity.Vendedores;
 import java.util.ArrayList;
@@ -633,4 +634,123 @@ public class JessmarService {
           return Response.status(200).entity(unidadMedia).build(); 
           
     }
+    
+    
+    @PermitAll 
+    @POST
+    @Path("/getListaPaises")
+    @Produces("application/json")
+    public Response getListaPaises() {  
+        
+          Map<String, Object> paises = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              paises = controller.getListaPaises();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(paises).build(); 
+          
+    }
+    
+    @PermitAll 
+    @POST
+    @Path("/getPaisById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getPaisById(  @FormParam("id") String id) {  
+        
+          Map<String, Object> pais = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+                pais = controller.getPaisById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(pais).build(); 
+          
+    }
+    
+    @PermitAll 
+    @POST
+    @Path("/getListaEstadosFull")
+    @Produces("application/json")
+    public Response getListaEstadosFull() {  
+        
+          Map<String, Object> estados = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              estados = controller.getListaEstadosFull();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(estados).build(); 
+          
+    }
+    
+    @POST
+    @Path("/getListaEstados")
+    @Produces("application/json")
+    public Response getListaEstados() {  
+        
+          List<Estados> estados = new ArrayList<Estados>();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              estados = controller.getListaEstados();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(estados).build(); 
+          
+    } 
+    
+    
+    @PermitAll 
+    @POST
+    @Path("/getEstadoById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getEstadoById(  @FormParam("id") String id) {  
+        
+          Map<String, Object> estado = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+                estado = controller.getEstadoById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(estado).build(); 
+          
+    }
+    
 }

@@ -9,6 +9,7 @@ import Tool.JDBCUtils;
 import com.group.spcsystems.entity.Articulos;
 import com.group.spcsystems.entity.Cattipopedido;
 import com.group.spcsystems.entity.Clientes;
+import com.group.spcsystems.entity.Estados;
 import com.group.spcsystems.entity.Pedidos;
 import com.group.spcsystems.entity.PedidosDetalle;
 import com.group.spcsystems.entity.Usuarios;
@@ -1439,6 +1440,257 @@ public Map<String, Object> getUnidadMedidaById(String id){
                         resp.put("success", Boolean.TRUE);
                         resp.put("erromsg", null);
                         resp.put("payload", unidadMedida);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+String GET_LISTA_PAISES = "Select id, nombre from paises order by nombre ";
+public Map<String, Object> getListaPaises(){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    List<Map<String, Object>> paises= new ArrayList<Map<String, Object>>();
+    
+
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                paises = queryRunner.query(dbCon, GET_LISTA_PAISES, new MapListHandler() );
+                            
+                if(paises == null || paises.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", paises);
+                }                           
+        }catch(Exception e){           
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+
+String GET_PAIS_BY_ID = "SELECT id, nombre FROM paises where id = ";
+
+public Map<String, Object> getPaisById(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> pais= new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                pais = queryRunner.query(dbCon, GET_PAIS_BY_ID + id, new MapHandler() );
+                         
+                if(pais == null || pais.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "Pais no encontrado");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", pais);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+String GET_LISTA_ESTADOS_FULL = "SELECT e.id, e.nombre, p.id as pais_id, p.nombre as pais_nombre " +
+                                 "FROM estados e, paises p " +
+                                 "WHERE p.id = e.pais_id " +
+                                 "ORDER BY p.nombre, e.nombre";
+
+public Map<String, Object> getListaEstadosFull(){
+    
+     Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+   List<Map<String, Object>> listaestados = new ArrayList<Map<String, Object>>();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                listaestados = queryRunner.query(dbCon, GET_LISTA_ESTADOS_FULL, new MapListHandler() );
+          
+                
+                if(listaestados == null || listaestados.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listaestados);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+String  GET_LISTA_DESTADOS = "select * from estados order by id  desc";
+    
+public List<Estados> getListaEstados(){
+ 
+ Connection dbCon = null;
+ List<Estados> listapedidos = new ArrayList<Estados>();
+ 
+ try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner run = new QueryRunner();
+
+               
+                ResultSetHandler<List<Estados>> h = new BeanListHandler<Estados>(Estados.class);
+
+                
+                listapedidos = run.query(dbCon, GET_LISTA_DESTADOS, h );
+
+ }catch(Exception e){
+                e.printStackTrace();
+ }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                 }
+             }
+            
+ }
+ 
+  return listapedidos;
+}
+
+
+String GET_ESTADO_BY_ID = "SELECT e.id, e.nombre, p.id as pais_id, p.nombre as pais_nombre " +
+                          "FROM estados e, paises p  " +
+                          "WHERE p.id = e.pais_id " +
+                          "AND e.id = ";
+
+public Map<String, Object> getEstadoById(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> estado= new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                estado = queryRunner.query(dbCon, GET_ESTADO_BY_ID + id, new MapHandler() );
+                         
+                if(estado == null || estado.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "Pais no encontrado");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", estado);
                 }
                 
                        
