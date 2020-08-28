@@ -24,6 +24,10 @@ public class Clientes {
     String direccion;
     String ciudad;
     Long diascred;
+    String noext;
+    String codigopost;
+    String colonia;
+    String municipio;
     
     public Clientes(){}
 
@@ -114,6 +118,40 @@ public class Clientes {
     public void setDiascred(Long diascred) {
         this.diascred = diascred;
     }
+
+    public String getNoext() {
+        return noext;
+    }
+
+    public void setNoext(String noext) {
+        this.noext = noext;
+    }
+
+    public String getCodigopost() {
+        return codigopost;
+    }
+
+    public void setCodigopost(String codigopost) {
+        this.codigopost = codigopost;
+    }
+
+    public String getColonia() {
+        return colonia;
+    }
+
+    public void setColonia(String colonia) {
+        this.colonia = colonia;
+    }
+
+    public String getMunicipio() {
+        return municipio;
+    }
+
+    public void setMunicipio(String municipio) {
+        this.municipio = municipio;
+    }
+
+
     
     
 }

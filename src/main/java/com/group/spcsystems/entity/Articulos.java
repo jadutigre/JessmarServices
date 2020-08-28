@@ -19,6 +19,7 @@ public class Articulos {
     String status;
     String lugar;
     BigDecimal maximo;
+    BigDecimal prorden;
     BigDecimal minimo;
     String parte;
     BigDecimal pcio1;
@@ -197,6 +198,17 @@ public class Articulos {
     public void setUnidmed_id(Integer unidmed_id) {
         this.unidmed_id = unidmed_id;
     }
+
+    public BigDecimal getProrden() {
+        return prorden;
+    }
+
+    public void setProrden(BigDecimal prorden) {
+        this.prorden = prorden;
+    }
+    
+    
+    
 
   
 }

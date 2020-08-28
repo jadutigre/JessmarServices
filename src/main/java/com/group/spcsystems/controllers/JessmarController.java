@@ -1182,8 +1182,8 @@ public Map<String, Object> insertaCliente(Map elcliente){
 
 
 
-String  INSERT_ARTICULO = "INSERT INTO articulos(version,   lugar,   grupo_id,   subgrupo_id,   unidmed_id,   almacen_id,   valoriva,   pcio4,   pcio3,   pcio2,   pcio1,   parte,  estatus,   codant,   minimo,   maximo,   codigo,   valorutmin,   valorutsug,   descripcion,   activo, cvesat, unidadsat) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-String  UPDATE_ARTICULO = "UPDATE articulos  SET version=?, lugar=?, grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=?, estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=?, cvesat=?,unidadsat=? WHERE id=?";
+String  INSERT_ARTICULO = "INSERT INTO articulos(version,   lugar,   grupo_id,   subgrupo_id,   unidmed_id,   almacen_id,   valoriva,   pcio4,   pcio3,   pcio2,   pcio1,   parte,  estatus,   codant,   minimo,   maximo,   codigo,   valorutmin,   valorutsug,   descripcion,   activo, cvesat, unidadsat,prorden) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+String  UPDATE_ARTICULO = "UPDATE articulos  SET version=?, lugar=?, grupo_id=?, subgrupo_id=?, unidmed_id=?, almacen_id=?, valoriva=?, pcio4=?, pcio3=?, pcio2=?, pcio1=?, parte=?, estatus=?, codant=?, minimo=?, maximo=?, codigo=?, valorutmin=?, valorutsug=?, descripcion=?, activo=?, cvesat=?,unidadsat=?,prorden=? WHERE id=?";
 /**
  *  Metodo que inserta o actualiza a un articulo.
  * @param elarticulo
@@ -1218,7 +1218,8 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
     String  descripcion = elarticulo.get("descripcion")     == null ? ""   : (String)elarticulo.get("descripcion");
     Boolean activo      = elarticulo.get("activo")          == null ? false : (Boolean)elarticulo.get("activo");
     String  cvesat      = elarticulo.get("cvesat")          == null ? ""   : (String)elarticulo.get("cvesat");
-    String  unidadsat      = elarticulo.get("unidadsat")          == null ? ""   : (String)elarticulo.get("unidadsat");
+    String  unidadsat      = elarticulo.get("unidadsat")    == null ? ""   : (String)elarticulo.get("unidadsat");
+    Double  prorden      = elarticulo.get("prorden")        == null ? 0.0   : (Double)elarticulo.get("prorden");
     
  
        
@@ -1235,11 +1236,11 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
                 Long newid = 0L;
                 if( id != 0){ // Update
                   
-                    numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat,  id );
+                    numrows = queryRunner.update(dbCon, UPDATE_ARTICULO ,               0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat, prorden,  id );
                     payload.put("actualizados", numrows);
                 }
                 else{                  
-                     newid = queryRunner.insert(dbCon, INSERT_ARTICULO , scalarHandler, 0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat );
+                     newid = queryRunner.insert(dbCon, INSERT_ARTICULO , scalarHandler, 0, lugar, grupo_id, subgrupo_id, unidmed_id, almacen_id, valoriva, pcio4, pcio3, pcio2, pcio1, parte, estatus, codant, minimo, maximo, codigo, valorutmin, valorutsug, descripcion, activo, cvesat, unidadsat, prorden );
                       payload.put("id", newid);
                 }
                 
