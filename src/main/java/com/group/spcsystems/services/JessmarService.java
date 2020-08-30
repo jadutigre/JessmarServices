@@ -10,6 +10,7 @@ import com.group.spcsystems.entity.Pedidos;
 import com.group.spcsystems.controllers.JessmarController;
 import com.group.spcsystems.entity.Articulos;
 import com.group.spcsystems.entity.Cattipopedido;
+import com.group.spcsystems.entity.Cfdiuso;
 import com.group.spcsystems.entity.Clientes;
 import com.group.spcsystems.entity.Estados;
 import com.group.spcsystems.entity.Usuarios;
@@ -752,5 +753,77 @@ public class JessmarService {
           return Response.status(200).entity(estado).build(); 
           
     }
+    
+    
+    @PermitAll 
+    @POST
+    @Path("/getListaUsoCFDI_Full")
+    @Produces("application/json")
+    public Response getListaUsoCFDI_Full() {  
+        
+          Map<String, Object> listausoscfdi = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              listausoscfdi = controller.getListaUsoCFDI_Full();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(listausoscfdi).build(); 
+          
+    }
+    
+    @PermitAll
+    @POST
+    @Path("/getListaUsoCFDI")
+    @Produces("application/json")
+    public Response getListaUsoCFDI() {  
+        
+          List<Cfdiuso> listaUsocfdi = new ArrayList<Cfdiuso>();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              listaUsocfdi = controller.getListaUsoCFDI();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(listaUsocfdi).build(); 
+          
+    } 
+    
+    @PermitAll 
+    @POST
+    @Path("/getUsoCfdiById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getUsoCfdiById(  @FormParam("id") String id) {  
+        
+          Map<String, Object> usocfdi = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+                usocfdi = controller.getUsoCfdiById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(usocfdi).build(); 
+          
+    }
+    
     
 }
