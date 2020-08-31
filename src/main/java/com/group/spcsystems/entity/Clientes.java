@@ -30,7 +30,7 @@ public class Clientes {
     String municipio;
     Integer pais_id;
     Integer estado_id;
-    Integer cfdi_id;
+    Integer usocfdi_id;
     
     public Clientes(){}
 
@@ -170,15 +170,13 @@ public class Clientes {
         this.estado_id = estado_id;
     }
 
-    public Integer getCfdi_id() {
-        return cfdi_id;
+    public Integer getUsocfdi_id() {
+        return usocfdi_id;
     }
 
-    public void setCfdi_id(Integer cfdi_id) {
-        this.cfdi_id = cfdi_id;
+    public void setUsocfdi_id(Integer usocfdi_id) {
+        this.usocfdi_id = usocfdi_id;
     }
 
 
-    
-    
 }
