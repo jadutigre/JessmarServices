@@ -28,6 +28,9 @@ public class Clientes {
     String codigopost;
     String colonia;
     String municipio;
+    Integer pais_id;
+    Integer estado_id;
+    Integer cfdi_id;
     
     public Clientes(){}
 
@@ -149,6 +152,30 @@ public class Clientes {
 
     public void setMunicipio(String municipio) {
         this.municipio = municipio;
+    }
+
+    public Integer getPais_id() {
+        return pais_id;
+    }
+
+    public void setPais_id(Integer pais_id) {
+        this.pais_id = pais_id;
+    }
+
+    public Integer getEstado_id() {
+        return estado_id;
+    }
+
+    public void setEstado_id(Integer estado_id) {
+        this.estado_id = estado_id;
+    }
+
+    public Integer getCfdi_id() {
+        return cfdi_id;
+    }
+
+    public void setCfdi_id(Integer cfdi_id) {
+        this.cfdi_id = cfdi_id;
     }
 
 

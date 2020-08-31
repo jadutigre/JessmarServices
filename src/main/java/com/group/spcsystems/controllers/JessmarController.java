@@ -1103,8 +1103,14 @@ public Map<String, Object> deletePedidoDetalleById(String id){
 }
 
 
-String  INSERT_CLIENTE = "INSERT INTO clientes(version, iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-String  UPDATE_CLIENTE = "UPDATE clientes SET version=?, iva=?, telefono=?, rfc=?, nombre=?, email=?, observ=?, direccion=?, ciudad=?, nucta=?, diascred=? WHERE id=?";
+String  INSERT_CLIENTE = "INSERT INTO clientes(version, iva, telefono,"
+        + " rfc, nombre, email, observ, direccion, ciudad, nucta, "
+        + " diascred, noext,pais_id,estado_id,codigopost,colonia, municipio, usocfdi_id "
+        + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+String  UPDATE_CLIENTE = "UPDATE clientes SET version=?, iva=?, "
+        + "telefono=?, rfc=?, nombre=?, email=?, observ=?, direccion=?, "
+        + "ciudad=?, nucta=?, diascred=?, noext=?, pais_id=?, estado_id=?, "
+        + "codigopost=?,colonia=?,municipio=?, usocfdi_id=? WHERE id=?";
 /**
  *  Metodo que inserta o actualiza a un cliente.
  * @param elcliente
@@ -1126,8 +1132,15 @@ public Map<String, Object> insertaCliente(Map elcliente){
     String  observ      = elcliente.get("observ")   == null ? null : (String)elcliente.get("observ");  
     String  direccion   = elcliente.get("direccion")== null ? null : (String)elcliente.get("direccion");
     String  ciudad      = elcliente.get("ciudad")   == null ? null : (String)elcliente.get("ciudad");
+    String  noext      = elcliente.get("noext")   == null ? null : (String)elcliente.get("noext");
+    String  codigopost      = elcliente.get("codigopost")   == null ? null : (String)elcliente.get("codigopost");
+    String  colonia      = elcliente.get("colonia")   == null ? null : (String)elcliente.get("colonia");
+    String  municipio      = elcliente.get("municipio")   == null ? null : (String)elcliente.get("municipio");
     Integer nucta      = elcliente.get("nucta")     == null ? 0    : (Integer)elcliente.get("nucta"); 
     Integer diascred    = elcliente.get("diascred") == null ? 0    : (Integer)elcliente.get("diascred"); 
+    Integer pais_id      = elcliente.get("pais_id")     == null ? 0    : (Integer)elcliente.get("pais_id"); 
+    Integer estado_id      = elcliente.get("estado_id")     == null ? 0    : (Integer)elcliente.get("estado_id"); 
+    Integer usocfdi_id      = elcliente.get("usocfdi_id")     == null ? 0    : (Integer)elcliente.get("usocfdi_id"); 
        
 
        
@@ -1141,11 +1154,13 @@ public Map<String, Object> insertaCliente(Map elcliente){
                 int numrows; 
                 Long newid = 0L;
                 if( id != 0){ // Update
-                    numrows = queryRunner.update(dbCon, UPDATE_CLIENTE , 0, iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred, id );
+                    numrows = queryRunner.update(dbCon, UPDATE_CLIENTE , 0, iva, telefono, rfc, nombre,
+                            email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id, id );
                     payload.put("actualizados", numrows);
                 }
                 else{                  
-                     newid = queryRunner.insert(dbCon, INSERT_CLIENTE , scalarHandler, 0,  iva, telefono, rfc, nombre, email, observ, direccion, ciudad, nucta, diascred );
+                     newid = queryRunner.insert(dbCon, INSERT_CLIENTE , scalarHandler, 0,  iva, telefono, rfc, nombre, 
+                             email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id );
                       payload.put("id", newid);
                 }
                 
