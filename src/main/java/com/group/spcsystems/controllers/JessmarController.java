@@ -1969,7 +1969,7 @@ public Map<String, Object> getHieleraById(String id){
                          
                 if(hielera == null || hielera.isEmpty()){
                         resp.put("success", Boolean.FALSE);
-                        resp.put("erromsg", "UsoCFDI no encontrado");
+                        resp.put("erromsg", "hielera no encontrado");
                         resp.put("payload", null);                    
                 }else{
                         // modifico las fechas
@@ -2099,6 +2099,117 @@ public Map<String, Object> insertaHielera(Map lahielera){
        
     return resp;
     
+}
+
+
+
+String  GET_LISTA_GRUPO = "select * from grupo order by id  desc";
+public Map<String, Object> getListaGrupo(){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    List<Map<String, Object>> listagrupo = new ArrayList<Map<String, Object>>();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                listagrupo = queryRunner.query(dbCon, GET_LISTA_GRUPO, new MapListHandler() );
+          
+                
+                if(listagrupo == null || listagrupo.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listagrupo);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+
+String GET_GRUPO_BY_ID = "SELECT * FROM grupo WHERE ID = " ;
+public Map<String, Object> getGrupoById(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> grupo= new HashMap<String, Object> ();
+    
+    
+       
+      
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                grupo = queryRunner.query(dbCon, GET_GRUPO_BY_ID + id, new MapHandler() );
+                         
+                if(grupo == null || grupo.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "grupo no encontrado");
+                        resp.put("payload", null);                    
+                }else{
+                        
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", grupo);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
 }
 
 }
