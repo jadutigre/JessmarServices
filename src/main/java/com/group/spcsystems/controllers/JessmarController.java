@@ -1879,4 +1879,226 @@ public Map<String, Object> getUsoCfdiById(String id){
     return resp;
 }
 
+String  GET_LISTA_HIELERAS = "select * from hieleras order by id  desc";
+public Map<String, Object> getListaHieleras(){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+   List<Map<String, Object>> listahieleras= new ArrayList<Map<String, Object>>();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                 QueryRunner queryRunner = new QueryRunner();
+             
+                listahieleras = queryRunner.query(dbCon, GET_LISTA_HIELERAS, new MapListHandler() );
+          
+                
+                if(listahieleras == null || listahieleras.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                    
+                    // Proceso las fechas
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                    for(Map<String, Object> elemento_h : listahieleras){
+                        // cambiop fecha a Styring
+                    
+                        String sfechaadquisicion = sdf.format(elemento_h.get("fecha_adquisicion"));
+                        String sfechabaja = sdf.format(elemento_h.get("fecha_baja"));
+                        
+                        elemento_h.remove("fecha_adquisicion");
+                        elemento_h.put("fecha_adquisicion", sfechaadquisicion);
+                        
+                        elemento_h.remove("fecha_baja");
+                        elemento_h.put("fecha_baja", sfechabaja);
+                        
+                    }
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listahieleras);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+
+String GET_HILERA_BY_ID = "SELECT * FROM hieleras WHERE ID = " ;
+public Map<String, Object> getHieleraById(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> hielera= new HashMap<String, Object> ();
+    
+    
+       
+       //Procedo a grbar el encabezado
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                hielera = queryRunner.query(dbCon, GET_HILERA_BY_ID + id, new MapHandler() );
+                         
+                if(hielera == null || hielera.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "UsoCFDI no encontrado");
+                        resp.put("payload", null);                    
+                }else{
+                        // modifico las fechas
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                        String sfechaadquisicion = sdf.format(hielera.get("fecha_adquisicion"));
+                        String sfechabaja = sdf.format(hielera.get("fecha_baja"));                      
+                        hielera.remove("fecha_adquisicion");
+                        hielera.put("fecha_adquisicion", sfechaadquisicion);                       
+                        hielera.remove("fecha_baja");
+                        hielera.put("fecha_baja", sfechabaja);
+                        
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", hielera);
+                }
+                
+                       
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+
+String  INSERT_HIELERA = "INSERT INTO pedidos(version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
+String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? WHERE id=?";
+   
+        
+public Map<String, Object> insertaHielera(Map lahielera){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // paraa qyue obtenga el id
+    // Proceso el mapa de la hielera.
+    // CABECERA
+       Integer id                =  lahielera.get("id") == null ? 0 :   (Integer)lahielera.get("id");  // si viene es update si no viene o es cero es insert
+       String fecha_adquisicion  =  (String) lahielera.get("fecha_adquisicion");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String clave              =  (String) lahielera.get("clave");
+       String descripcion        =  (String) lahielera.get("descripcion");
+       String fecha_baja         =  (String) lahielera.get("fecha_baja");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       Boolean activa            =   lahielera.get("activa")  == null ? false : (Boolean)lahielera.get("activa");
+       
+      
+  
+       if( ! GenericValidator.isDate(fecha_adquisicion, "yyyy-MM-dd HH:mm", true) ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "fecha adquisicion invalida");
+            resp.put("payload", null);
+            return resp;
+        }
+       
+       if( ! GenericValidator.isDate(fecha_baja, "yyyy-MM-dd HH:mm", true) ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "fecha baja invalida");
+            resp.put("payload", null);
+            return resp;
+        }
+       
+      
+       
+       //Procedo a grbar
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                dbCon.setAutoCommit(false);
+                QueryRunner queryRunner = new QueryRunner();
+                
+                 int numrows; 
+                 Long newid = 0L;
+                if( id != 0){ // Update String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? WHERE id=?";
+                   numrows = queryRunner.update(dbCon, UPDATE_HIELERA , 0,fecha_adquisicion, clave, descripcion, fecha_baja, activa, id);
+                    payload.put("actualizados", numrows);
+                }
+                else{
+                   // insert String  INSERT_HIELERA = "INSERT INTO pedidos(version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
+                     newid = queryRunner.insert(dbCon, INSERT_HIELERA , scalarHandler, 0, fecha_adquisicion, clave, descripcion, fecha_baja, activa);
+                     payload.put("id", newid);
+                }
+                      
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+    
+}
+
 }

@@ -825,5 +825,85 @@ public class JessmarService {
           
     }
     
+    @PermitAll 
+    @POST
+    @Path("/getListaHieleras")
+    @Produces("application/json")
+    public Response getListaHieleras() {  
+        
+          Map<String, Object> listaHieleras = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              listaHieleras = controller.getListaHieleras();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(listaHieleras).build(); 
+          
+    }
+    
+    
+    @PermitAll 
+    @POST
+    @Path("/getHieleraById")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getHieleraById(  @FormParam("id") String id) {  
+        
+          Map<String, Object> hielera = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+                hielera = controller.getHieleraById(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(hielera).build(); 
+          
+    }
+    
+    @PermitAll
+    @POST
+    @Path("/insertaHielera")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response insertaHielera(
+            @FormParam("json") String json
+    ){
+        
+            System.out.println(json);
+            //json = json.replace("json=", "");
+        
+            Map<String, Object> resp = new HashMap<String, Object> ();
+            ObjectMapper mapper = new ObjectMapper();
+            
+            
+            try{
+                JessmarController controller = new JessmarController();
+                Map<String, Object> mapa = mapper.readValue(json, Map.class);
+                resp = controller.insertaHielera(mapa);
+            }catch(IOException e){
+                e.printStackTrace();
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", e.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build(); 
+            }
+        
+             
+        
+          return Response.status(200).entity(resp).build();
+    }
     
 }
