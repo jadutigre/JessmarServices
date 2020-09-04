@@ -955,4 +955,85 @@ public class JessmarService {
           
     }
     
+    
+    @PermitAll 
+    @POST
+    @Path("/getListaPrecios")
+    @Produces("application/json")
+    public Response getListaPrecios( ) {  
+        
+          Map<String, Object> listaprecios = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              listaprecios = controller.getListaPrecios();
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(listaprecios).build(); 
+          
+    }
+    
+    @PermitAll 
+    @POST
+    @Path("/getListaPreciosByIdCliente")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response getListaPreciosByIdCliente(@FormParam("id") String id) {  
+        
+          Map<String, Object> listaprecios = new HashMap<String, Object> ();
+          Map<String, Object> resp = new HashMap<String, Object> ();
+          
+          try{
+              JessmarController controller = new JessmarController();
+              listaprecios = controller.getListaPreciosByIdCliente(id);
+          }catch(Exception ex){
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", ex.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build();
+          }
+        
+          return Response.status(200).entity(listaprecios).build(); 
+          
+    }
+    
+    @PermitAll
+    @POST
+    @Path("/insertaPrecioArticuloCliente")
+    @Produces("application/json")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response insertaPrecioArticuloCliente(
+            @FormParam("json") String json
+    ){
+        
+            System.out.println(json);
+            //json = json.replace("json=", "");
+        
+            Map<String, Object> resp = new HashMap<String, Object> ();
+            ObjectMapper mapper = new ObjectMapper();
+            
+            
+            try{
+                JessmarController controller = new JessmarController();
+                Map<String, Object> mapa = mapper.readValue(json, Map.class);
+                resp = controller.insertaPrecioArticuloCliente(mapa);
+            }catch(IOException e){
+                e.printStackTrace();
+                resp.put("success", Boolean.FALSE);
+                resp.put("erromsg", e.getMessage());
+                resp.put("payload", null);
+                return Response.status(200).entity(resp).build(); 
+            }
+        
+             
+        
+          return Response.status(200).entity(resp).build();
+    }
+    
 }

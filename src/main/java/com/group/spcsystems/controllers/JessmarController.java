@@ -2212,4 +2212,202 @@ public Map<String, Object> getGrupoById(String id){
     return resp;
 }
 
+String  GET_LISTA_PRECIOS = "SELECT l.id, l.articulo_id, a.codigo, a.descripcion, l.cliente_id, c.nombre, l.precio " +
+                             "FROM lista_precios l, articulos a, clientes c " +
+                             "WHERE  a.id = l.articulo_id " +
+                             "AND    c.id = l.cliente_id";
+public Map<String, Object> getListaPrecios(){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    List<Map<String, Object>> listaprecios = new ArrayList<Map<String, Object>>();
+    
+    
+      
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                listaprecios = queryRunner.query(dbCon, GET_LISTA_PRECIOS, new MapListHandler() );
+          
+                
+                if(listaprecios == null || listaprecios.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listaprecios);
+                }
+                
+                
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+String  GET_LISTA_PRECIOS_BY_ID_CLIENTE = "SELECT l.id, l.articulo_id, a.codigo, a.descripcion, l.cliente_id, c.nombre, l.precio " +
+                             "FROM lista_precios l, articulos a, clientes c " +
+                             "WHERE  a.id = l.articulo_id " +
+                             "AND    c.id = l.cliente_id" +
+                             " AND   c.id = ";
+public Map<String, Object> getListaPreciosByIdCliente(String id){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    List<Map<String, Object>> listabycliente = new ArrayList<Map<String, Object>>();
+    
+    
+      
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();
+                QueryRunner queryRunner = new QueryRunner();
+             
+                listabycliente = queryRunner.query(dbCon, GET_LISTA_PRECIOS_BY_ID_CLIENTE + id, new MapListHandler() );
+          
+                
+                if(listabycliente == null || listabycliente.isEmpty()){
+                        resp.put("success", Boolean.FALSE);
+                        resp.put("erromsg", "The Table is empty");
+                        resp.put("payload", null);                    
+                }else{
+                        resp.put("success", Boolean.TRUE);
+                        resp.put("erromsg", null);
+                        resp.put("payload", listabycliente);
+                }
+                
+                
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+}
+
+String  INSERT_PRECIO_CLIENTEARTIULO = "INSERT INTO lista_precios(version, precio, articulo_id, cliente_id) VALUES(?,?,?,?)";
+String  UPDATE_PRECIO_CLIENTEARTIULO = "UPDATE lista_precios SET version=?, precio=?, articulo_id=?, cliente_id=? WHERE id=?";
+   
+        
+public Map<String, Object> insertaPrecioArticuloCliente(Map preciarticulocleinte){
+    
+    Connection dbCon = null;
+    Map<String, Object> resp = new HashMap<String, Object> ();
+    Map<String, Object> payload = new HashMap<String, Object> ();
+    ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // paraa qyue obtenga el id
+    // Proceso el mapa de la hielera.
+    // CABECERA
+       Integer id           = preciarticulocleinte.get("id")          == null ? 0    : (Integer)preciarticulocleinte.get("id");  // si viene es update si no viene o es cero es insert
+       Double precio        = preciarticulocleinte.get("precio")      == null ? 0.00 : (Double)preciarticulocleinte.get("precio");            
+       Integer articulo_id  = preciarticulocleinte.get("articulo_id") == null ? 0    : (Integer)preciarticulocleinte.get("articulo_id"); 
+       Integer cliente_id   = preciarticulocleinte.get("cliente_id")  == null ? 0    : (Integer)preciarticulocleinte.get("cliente_id"); 
+       
+      
+  
+       if(articulo_id == 0 ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "Articulo invalido");
+            resp.put("payload", null);
+            return resp;
+        }
+       
+        if(cliente_id == 0 ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "Cliente invalido");
+            resp.put("payload", null);
+            return resp;
+        }
+       
+      
+       
+       //Procedo a grbar
+       try{
+     
+		dbCon = new JDBCUtils().connectDatabase();           
+                dbCon.setAutoCommit(false);
+                QueryRunner queryRunner = new QueryRunner();
+                
+                 int numrows; 
+                 Long newid = 0L;
+                if( id != 0){ // String  UPDATE_PRECIO_CLIENTEARTIULO = "UPDATE lista_precios SET version=?, precio=?, articulo_id=?, cliente_id=? WHERE id=?";
+                   numrows = queryRunner.update(dbCon, UPDATE_PRECIO_CLIENTEARTIULO , 0, precio, articulo_id, cliente_id, id);
+                    payload.put("actualizados", numrows);
+                }
+                else{
+                   // String  INSERT_PRECIO_CLIENTEARTIULO = "INSERT INTO lista_precios(version, precio, articulo_id, cliente_id) VALUES(?,?,?,?)";
+                     newid = queryRunner.insert(dbCon, INSERT_PRECIO_CLIENTEARTIULO , scalarHandler, 0, precio, articulo_id, cliente_id);
+                     payload.put("id", newid);
+                }
+                      
+                // Finalizo
+                DbUtils.commitAndCloseQuietly(dbCon);
+                
+                resp.put("success", Boolean.TRUE);
+                resp.put("erromsg", null);
+                resp.put("payload", payload);
+               
+        }catch(Exception e){
+            //procedo roolback
+            DbUtils.rollbackAndCloseQuietly(dbCon);
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", e.getMessage());
+            resp.put("payload", null);        
+        }finally{
+
+            if(dbCon!=null){
+                 try{
+                     dbCon.close();
+                 }catch(SQLException sqle){
+                     resp.put("success", Boolean.FALSE);
+                     resp.put("erromsg", sqle.getMessage());
+                     resp.put("payload", null);      
+                 }
+             }
+            
+        }
+       
+       
+    return resp;
+    
+}
+
+
 }
