@@ -2013,7 +2013,7 @@ public Map<String, Object> getHieleraById(String id){
 }
 
 
-String  INSERT_HIELERA = "INSERT INTO pedidos(version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
+String  INSERT_HIELERA = "INSERT INTO hieleras (version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
 String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? WHERE id=?";
    
         
