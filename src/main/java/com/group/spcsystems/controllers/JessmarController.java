@@ -75,24 +75,58 @@ public List<Pedidos> getListaPedidos(){
 return listapedidos;
 }
 
-String  GET_LISTA_DE_PEDIDOS_FULL = "select p.id as id" +
+//String  GET_LISTA_DE_PEDIDOS_FULL = "select p.id as id" +
+//                                    ",p.fechapedido as fechapedido " +
+//                                    ",p.usuario as usuario " +
+//                                    ",p.areaentrega as areaentrega " +
+//                                    ",tp.id as tipopedido_id " +
+//                                    ",tp.clave as tipoPedidoClave " +
+//                                    ",tp.descripcion as tipopedidodescripcion " +
+//                                    ",c.id as clientes_id " +
+//                                    ",c.nombre as clientenombre " +
+//                                    ",c.telefono as clienteTelefono " +
+//                                    ",v.id as vendedor_id " +
+//                                    ",v.clave as vendedorClave " +
+//                                    ",v.nombre as vendedornombre " +
+//                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
+//                                    "where p.tipopedido_id = tp.id " +
+//                                    "and p.clientes_id = c.id " +
+//                                    "and p.vendedor_id = v.id " +
+//                                    "order by p.id  desc ";
+String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
+                                    ",p.status as status " +
                                     ",p.fechapedido as fechapedido " +
-                                    ",p.usuario as usuario " +
+                                    ",p.fechacancelado as fechacancelado " +
+                                    ",p.fechacierre as fechacierre " +
+                                    ",ua.id as usuarioabre_id "  +
+                                    ",ua.usuario as usuarioabre " +
+                                    ",ua.nombre as usuarioabrenombre " +
+                                    ",uc.id as usuariocierra_id " +
+                                    ",uc.usuario as usuariocierra " +
+                                    ",uc.nombre as usuariocierranombre " +
+                                    ",ux.id as usuariocancela_id " +
+                                    ",ux.usuario as usuariocancela " +
+                                    ",ux.nombre as usuariocancelanombre " +                                
                                     ",p.areaentrega as areaentrega " +
                                     ",tp.id as tipopedido_id " +
                                     ",tp.clave as tipoPedidoClave " +
                                     ",tp.descripcion as tipopedidodescripcion " +
                                     ",c.id as clientes_id " +
                                     ",c.nombre as clientenombre " +
-                                    ",c.telefono as clienteTelefono " +
+                                    ",c.telefono as clienteTelefono  " +
                                     ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
                                     ",v.nombre as vendedornombre " +
-                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
-                                    "where p.tipopedido_id = tp.id " +
-                                    "and p.clientes_id = c.id " +
-                                    "and p.vendedor_id = v.id " +
+                                    "from pedidos p " +
+                                    "left join cattipopedido tp on  p.tipopedido_id = tp.id " +
+                                    "left join clientes c       on p.clientes_id = c.id  " +
+                                    "left join vendedores v     on p.vendedor_id = v.id " +
+                                    "left join usuarios ua      on  p.usrabrio_id = ua.id " +
+                                    "left join usuarios uc      on  p.usrcerro_id = uc.id " +
+                                    "left join usuarios ux      on  p.usrcancelo_id = ux.id " +
                                     "order by p.id  desc ";
+        
+        
 public Map<String, Object> getListaPedidoFull(){
     
      Connection dbCon = null;
@@ -115,6 +149,26 @@ public Map<String, Object> getListaPedidoFull(){
                     String sfechapedido = sdf.format(pedido.get("fechapedido"));
                     pedido.remove("fechapedido");
                     pedido.put("fechapedido", sfechapedido);
+                    
+                    Object fechaobj = pedido.get("fechacierre");
+                    pedido.remove("fechacierre");
+                    if(fechaobj == null){
+                        pedido.put("fechacierre", null);
+                    }else{
+                        String sfechacierre = sdf.format(fechaobj);                   
+                        pedido.put("fechacierre", sfechacierre);
+                    }
+                    
+                    fechaobj = pedido.get("fechacancelado");
+                      pedido.remove("fechacancelado");
+                    if(fechaobj == null){
+                        pedido.put("fechacancelado", null);
+                    }else{
+                        String sfechacancelado = sdf.format(pedido.get("fechacancelado"));           
+                        pedido.put("fechacancelado", sfechacancelado);
+                    }
+                    
+                    
                 }
                  
                    
@@ -544,26 +598,57 @@ List<Map<String, Object>> listaarticulos = new ArrayList<Map<String, Object>>();
 
 }
 
-
-
 String  GET_PEDIDOBYID =            "select p.id as id" +
+                                    ",p.status as status " +
                                     ",p.fechapedido as fechapedido " +
-                                    ",p.usuario as usuario " +
+                                    ",p.fechacancelado as fechacancelado " +
+                                    ",p.fechacierre as fechacierre " +
+                                    ",ua.id as usuarioabre_id "  +
+                                    ",ua.usuario as usuarioabre " +
+                                    ",ua.nombre as usuarioabrenombre " +
+                                    ",uc.id as usuariocierra_id " +
+                                    ",uc.usuario as usuariocierra " +
+                                    ",uc.nombre as usuariocierranombre " +
+                                    ",ux.id as usuariocancela_id " +
+                                    ",ux.usuario as usuariocancela " +
+                                    ",ux.nombre as usuariocancelanombre " +                                
                                     ",p.areaentrega as areaentrega " +
                                     ",tp.id as tipopedido_id " +
                                     ",tp.clave as tipoPedidoClave " +
                                     ",tp.descripcion as tipopedidodescripcion " +
                                     ",c.id as clientes_id " +
                                     ",c.nombre as clientenombre " +
-                                    ",c.telefono as clienteTelefono " +
+                                    ",c.telefono as clienteTelefono  " +
                                     ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
                                     ",v.nombre as vendedornombre " +
-                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
-                                    "where p.tipopedido_id = tp.id " +
-                                    "and p.clientes_id = c.id " +
-                                    "and p.vendedor_id = v.id " +
-                                    "and p.id = ";
+                                    "from pedidos p " +
+                                    "left join cattipopedido tp on  p.tipopedido_id = tp.id " +
+                                    "left join clientes c       on p.clientes_id = c.id  " +
+                                    "left join vendedores v     on p.vendedor_id = v.id " +
+                                    "left join usuarios ua      on  p.usrabrio_id = ua.id " +
+                                    "left join usuarios uc      on  p.usrcerro_id = uc.id " +
+                                    "left join usuarios ux      on  p.usrcancelo_id = ux.id " +
+                                    "where p.id =  ";
+
+//String  GET_PEDIDOBYID =            "select p.id as id" +
+//                                    ",p.fechapedido as fechapedido " +
+//                                    ",p.usuario as usuario " +
+//                                    ",p.areaentrega as areaentrega " +
+//                                    ",tp.id as tipopedido_id " +
+//                                    ",tp.clave as tipoPedidoClave " +
+//                                    ",tp.descripcion as tipopedidodescripcion " +
+//                                    ",c.id as clientes_id " +
+//                                    ",c.nombre as clientenombre " +
+//                                    ",c.telefono as clienteTelefono " +
+//                                    ",v.id as vendedor_id " +
+//                                    ",v.clave as vendedorClave " +
+//                                    ",v.nombre as vendedornombre " +
+//                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
+//                                    "where p.tipopedido_id = tp.id " +
+//                                    "and p.clientes_id = c.id " +
+//                                    "and p.vendedor_id = v.id " +
+//                                    "and p.id = ";
 
 
 String  GET_PEDIDOSDETALLE =    "select pd.id as id " +
@@ -604,11 +689,32 @@ public Map<String, Object> getPedidoById(String id){
                 
                 if(pedido != null &&  !pedido.isEmpty() ){ //  Proceso detalles
                     
-                    // cambiop fecha a Styring
+                    // cambio fecha a String
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
                     String sfechapedido = sdf.format(pedido.get("fechapedido"));
                     pedido.remove("fechapedido");
                     pedido.put("fechapedido", sfechapedido);
+                    
+                  
+                    
+                    Object fechaobj = pedido.get("fechacierre");
+                    pedido.remove("fechacierre");
+                    if(fechaobj == null){
+                        pedido.put("fechacierre", null);
+                    }else{
+                        String sfechacierre = sdf.format(fechaobj);                   
+                        pedido.put("fechacierre", sfechacierre);
+                    }
+                    
+                    fechaobj = pedido.get("fechacancelado");
+                      pedido.remove("fechacancelado");
+                    if(fechaobj == null){
+                        pedido.put("fechacancelado", null);
+                    }else{
+                        String sfechacancelado = sdf.format(pedido.get("fechacancelado"));           
+                        pedido.put("fechacancelado", sfechacancelado);
+                    }
+                    
                     
                     
                     pedidosdetalle = queryRunner.query(dbCon, GET_PEDIDOSDETALLE+id, new MapListHandler() );
@@ -641,10 +747,14 @@ public Map<String, Object> getPedidoById(String id){
 return resp;
 }
 
-String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?)";
-String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, fechapedido=?, usuario=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
+//String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?)";
+//String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, fechapedido=?, usuario=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
+  
+
+String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, status, fechapedido, usrabrio_id, clientes_id, vendedor_id, tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?,?)";
+String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, status=?, fechapedido=?, fechacierre=?, fechacancelado=?, usrabrio_id=?, usrcerro_id=?, usrcancelo_id=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
 String  INSERT_PEDIDODETALLE = "INSERT INTO pedidos_detalle(version, cantidad, total, precio, articulo_id, pedido_id ) VALUES (?,?,?,?,?,?)";
-String  UPDATE_PEDIDODETALLE = "UPDATE pedidos_detalle SET version=?, cantidad=?, total=?, precio=?, articulo_id=?, pedido_id=? WHERE id=?";      
+String  UPDATE_PEDIDODETALLE = "UPDATE pedidos_detalle SET version=?, cantidad=?, total=?, precio=?, articulo_id=?, pedido_id=? WHERE id=?";  
         
 public Map<String, Object> insertaPedido(Map elpedido){
     
@@ -654,14 +764,26 @@ public Map<String, Object> insertaPedido(Map elpedido){
     ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // paraa qyue obtenga el id
     // Proceso el mapa del pedido y sus detalles.
     // CABECERA
-       Integer id              =  elpedido.get("id") == null ? 0 :   (Integer)elpedido.get("id");  // si viene es update si no viene o es cero es insert
-       Integer clientes_id   =  elpedido.get("clientes_id") == null ? 0 : (Integer)elpedido.get("clientes_id") ;
-       Integer vendedor_id   =  elpedido.get("vendedor_id") == null ? 0 : (Integer)elpedido.get("vendedor_id");
-       Integer tipopedido_id =  elpedido.get("tipopedido_id") == null ? 0 : (Integer)elpedido.get("tipopedido_id");
-       String fechapedido      =  (String) elpedido.get("fechapedido");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
-       String usuario          =  (String)elpedido.get("usuario");
-       String areaentrega      =  (String)elpedido.get("areaentrega");
+       Integer id            =  elpedido.get("id") == null ? 0 :   (Integer)elpedido.get("id");  // si viene es update si no viene o es cero es insert
+       Integer usrabrio_id   =  elpedido.get("usrabrio_id") == null ?  null  :(Integer)elpedido.get("usrabrio_id") ;
+       Integer usrcancelo_id =  elpedido.get("usrcancelo_id") == null? null  : (Integer)elpedido.get("usrcancelo_id") ;
+       Integer usrcerro_id   =  elpedido.get("usrcerro_id") == null ?  null  : (Integer)elpedido.get("usrcerro_id") ;
+       Integer clientes_id   =  elpedido.get("clientes_id") == null ? 0      : (Integer)elpedido.get("clientes_id") ;
+       Integer vendedor_id   =  elpedido.get("vendedor_id") == null ? 0      : (Integer)elpedido.get("vendedor_id");
+       Integer tipopedido_id =  elpedido.get("tipopedido_id") == null ? 0    : (Integer)elpedido.get("tipopedido_id");
+       String  fechapedido   =  (String) elpedido.get("fechapedido");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String  fechacierre   =  elpedido.get("fechacierre") == null ? null   : (String) elpedido.get("fechacierre");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String  fechacancelado=  elpedido.get("fechacancelado") == null ? null : (String) elpedido.get("fechacancelado");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String  status        =  elpedido.get("status") == null ? "abierto"   : (String)elpedido.get("status");
+       String areaentrega    =  (String)elpedido.get("areaentrega");
        List<Map<String, Object>> detalles = (List<Map<String, Object>>)elpedido.get("pedidosdetalle");
+       
+       if( !status.equals("abierto") &&  !status.equals("cerrado") &&  !status.equals("cancelado")){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "status de pedido invalido");
+            resp.put("payload", null);
+            return resp;
+        }
        
        if(clientes_id == 0){
             resp.put("success", Boolean.FALSE);
@@ -691,13 +813,45 @@ public Map<String, Object> insertaPedido(Map elpedido){
             return resp;
        }
        
-       if(usuario == null || usuario.length() == 0 ){
+        
+       if(usrabrio_id == null || usrabrio_id == 0){
             resp.put("success", Boolean.FALSE);
-            resp.put("erromsg", "Usuario no valido");
+            resp.put("erromsg", "usrabrio_id invalido");
             resp.put("payload", null);
             return resp;
        }
        
+       // solo para caso update
+       
+       if(id  > 0 && status.equals("cerrado")  && (fechacierre == null ||   !GenericValidator.isDate(fechacierre, "yyyy-MM-dd HH:mm", true)) ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "fecha cierre invalida");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+        if(id  > 0 && status.equals("cerrado") && usrcerro_id == null ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "falta o es invalido el id del usuario  que cierra el pedido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+       if(id  > 0 && status.equals( "cancelado") && (fechacancelado == null ||  !GenericValidator.isDate(fechacancelado, "yyyy-MM-dd HH:mm", true) )){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "fecha cancelacion invalida");
+            resp.put("payload", null);
+            return resp;
+       }
+      
+       if(id  > 0 && status.equals( "cancelado") && usrcancelo_id == null ){
+            resp.put("success", Boolean.FALSE);
+            resp.put("erromsg", "falta o es invalido el id del usuario que cancela el pedido");
+            resp.put("payload", null);
+            return resp;
+       }
+       
+            
        //Procedo a grbar el encabezado
        try{
      
@@ -708,12 +862,13 @@ public Map<String, Object> insertaPedido(Map elpedido){
                  int numrows; 
                  Long newid = 0L;
                 if( id != 0){ // Update
-                   numrows = queryRunner.update(dbCon, UPDATE_PEDIDOS , 0,fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega, id);
+                  
+                   numrows = queryRunner.update(dbCon, UPDATE_PEDIDOS , 0, status, fechapedido, fechacierre, fechacancelado, usrabrio_id, usrcerro_id, usrcancelo_id, clientes_id, vendedor_id, tipopedido_id, areaentrega, id);
                     payload.put("actualizados", numrows);
                 }
                 else{
                    
-                     newid = queryRunner.insert(dbCon, INSERT_PEDIDOS , scalarHandler, 0, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega);
+                     newid = queryRunner.insert(dbCon, INSERT_PEDIDOS , scalarHandler, 0, status, fechapedido, usrabrio_id, clientes_id, vendedor_id,tipopedido_id, areaentrega);
                       payload.put("id", newid);
                 }
                 
@@ -770,6 +925,7 @@ public Map<String, Object> insertaPedido(Map elpedido){
     return resp;
     
 }
+
 
 String GET_CLIENTEBYID = "Select * from clientes where id = ";
 public Clientes getOneClienteById(String  id){
