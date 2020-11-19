@@ -15,17 +15,22 @@ public class Pedidos {
     
        Integer id;
        String  fechapedido;             //Formato "yyyy-MM-dd HH:mm"
-       String  usuario;
        Integer clientes_id;
        Integer vendedor_id;
        Integer tipopedido_id;
-       String  areaentrega; 
+       String  areaentrega;
+       String  status;             // puede ser :'abierto', 'cerrado' y 'cancelado'
+       Usuarios usrabrio;       // Usuario que creo este pedido
+       Usuarios usrcancelo;      // usuario que cancelo este pedido
+       Usuarios usrcerro;       // Usuario que cerro el pedido
+       String fechacierre;      //Formato "yyyy-MM-dd HH:mm" 
+       String fechacancelado;   //Formato "yyyy-MM-dd HH:mm"
        
        List<PedidosDetalle> pedido_detalle;
        
     public Pedidos() {
     }
-       
+
     public Integer getId() {
         return id;
     }
@@ -40,14 +45,6 @@ public class Pedidos {
 
     public void setFechapedido(String fechapedido) {
         this.fechapedido = fechapedido;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
     }
 
     public Integer getClientes_id() {
@@ -82,6 +79,54 @@ public class Pedidos {
         this.areaentrega = areaentrega;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Usuarios getUsrabrio() {
+        return usrabrio;
+    }
+
+    public void setUsrabrio(Usuarios usrabrio) {
+        this.usrabrio = usrabrio;
+    }
+
+    public Usuarios getUsrcancelo() {
+        return usrcancelo;
+    }
+
+    public void setUsrcancelo(Usuarios usrcancelo) {
+        this.usrcancelo = usrcancelo;
+    }
+
+    public Usuarios getUsrcerro() {
+        return usrcerro;
+    }
+
+    public void setUsrcerro(Usuarios usrcerro) {
+        this.usrcerro = usrcerro;
+    }
+
+    public String getFechacierre() {
+        return fechacierre;
+    }
+
+    public void setFechacierre(String fechacierre) {
+        this.fechacierre = fechacierre;
+    }
+
+    public String getFechacancelado() {
+        return fechacancelado;
+    }
+
+    public void setFechacancelado(String fechacancelado) {
+        this.fechacancelado = fechacancelado;
+    }
+
     public List<PedidosDetalle> getPedido_detalle() {
         return pedido_detalle;
     }
@@ -89,6 +134,7 @@ public class Pedidos {
     public void setPedido_detalle(List<PedidosDetalle> pedido_detalle) {
         this.pedido_detalle = pedido_detalle;
     }
-
+       
+    
     
 }
