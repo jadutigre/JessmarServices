@@ -19,11 +19,13 @@ public class Clientes {
     String telefono;
     String rfc;
     String nombre;
+    String razonsocial;
     String email;
     String observ;
     String direccion;
     String ciudad;
     Long diascred;
+    String noint;
     String noext;
     String codigopost;
     String colonia;
@@ -177,6 +179,24 @@ public class Clientes {
     public void setUsocfdi_id(Integer usocfdi_id) {
         this.usocfdi_id = usocfdi_id;
     }
+
+    public String getRazonsocial() {
+        return razonsocial;
+    }
+
+    public void setRazonsocial(String razonsocial) {
+        this.razonsocial = razonsocial;
+    }
+
+    public String getNoint() {
+        return noint;
+    }
+
+    public void setNoint(String noint) {
+        this.noint = noint;
+    }
+    
+    
 
 
 }

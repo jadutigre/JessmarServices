@@ -1263,12 +1263,13 @@ public Map<String, Object> deletePedidoDetalleById(String id){
 
 String  INSERT_CLIENTE = "INSERT INTO clientes(version, iva, telefono,"
         + " rfc, nombre, email, observ, direccion, ciudad, nucta, "
-        + " diascred, noext,pais_id,estado_id,codigopost,colonia, municipio, usocfdi_id "
-        + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        + " diascred, noext,pais_id,estado_id,codigopost,colonia, municipio, usocfdi_id, razonsocial, noint "
+        + ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
 String  UPDATE_CLIENTE = "UPDATE clientes SET version=?, iva=?, "
         + "telefono=?, rfc=?, nombre=?, email=?, observ=?, direccion=?, "
         + "ciudad=?, nucta=?, diascred=?, noext=?, pais_id=?, estado_id=?, "
-        + "codigopost=?,colonia=?,municipio=?, usocfdi_id=? WHERE id=?";
+        + "codigopost=?,colonia=?,municipio=?, usocfdi_id=?, razonsocial=?, noint=? WHERE id=?";
 /**
  *  Metodo que inserta o actualiza a un cliente.
  * @param elcliente
@@ -1299,6 +1300,8 @@ public Map<String, Object> insertaCliente(Map elcliente){
     Integer pais_id      = elcliente.get("pais_id")     == null ? 0    : (Integer)elcliente.get("pais_id"); 
     Integer estado_id      = elcliente.get("estado_id")     == null ? 0    : (Integer)elcliente.get("estado_id"); 
     Integer usocfdi_id      = elcliente.get("usocfdi_id")     == null ? 0    : (Integer)elcliente.get("usocfdi_id"); 
+    String  razonsocial      = elcliente.get("razonsocial")   == null ? null : (String)elcliente.get("razonsocial");
+    String  noint      = elcliente.get("noint")   == null ? null : (String)elcliente.get("noint");
        
 
        
@@ -1313,12 +1316,12 @@ public Map<String, Object> insertaCliente(Map elcliente){
                 Long newid = 0L;
                 if( id != 0){ // Update
                     numrows = queryRunner.update(dbCon, UPDATE_CLIENTE , 0, iva, telefono, rfc, nombre,
-                            email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id, id );
+                            email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id, razonsocial, noint, id );
                     payload.put("actualizados", numrows);
                 }
                 else{                  
                      newid = queryRunner.insert(dbCon, INSERT_CLIENTE , scalarHandler, 0,  iva, telefono, rfc, nombre, 
-                             email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id );
+                             email, observ, direccion, ciudad, nucta, diascred, noext, pais_id, estado_id, codigopost, colonia, municipio, usocfdi_id, razonsocial, noint );
                       payload.put("id", newid);
                 }
                 
@@ -2424,11 +2427,25 @@ public Map<String, Object> getListaPrecios(){
     return resp;
 }
 
-String  GET_LISTA_PRECIOS_BY_ID_CLIENTE = "SELECT l.id, l.articulo_id, a.codigo, a.descripcion, l.cliente_id, c.nombre, l.precio " +
-                             "FROM lista_precios l, articulos a, clientes c " +
-                             "WHERE  a.id = l.articulo_id " +
-                             "AND    c.id = l.cliente_id" +
-                             " AND   c.id = ";
+String  GET_LISTA_PRECIOS_BY_ID_CLIENTE =
+        
+//        "SELECT l.id, l.articulo_id, a.codigo, a.descripcion, l.cliente_id, c.nombre, l.precio " +
+//                             "FROM lista_precios l, articulos a, clientes c " +
+//                             "WHERE  a.id = l.articulo_id " +
+//                             "AND    c.id = l.cliente_id" +
+//                             " AND   c.id = ";
+
+" SELECT " +  
+  "  a.id as articulo_id,  " +  
+  "  a.codigo,  " +  
+  "  a.descripcion, " +  
+  "  c.id as cliente_id, " +  
+  "  c.nombre, " +  
+  "  ifnull((select id from lista_precios where articulo_id=a.id and cliente_id=c.id),0) as precio_id,  "+      
+  "  ifnull((select precio from lista_precios where articulo_id=a.id and cliente_id=c.id),0) as precio  " +  
+                            " FROM  articulos a, clientes c  " +  
+                            " WHERE   c.id = ";
+
 public Map<String, Object> getListaPreciosByIdCliente(String id){
     
     Connection dbCon = null;
