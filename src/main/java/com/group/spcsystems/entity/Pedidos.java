@@ -25,8 +25,17 @@ public class Pedidos {
        Usuarios usrcerro;       // Usuario que cerro el pedido
        String fechacierre;      //Formato "yyyy-MM-dd HH:mm" 
        String fechacancelado;   //Formato "yyyy-MM-dd HH:mm"
+       Integer hielera_id;
        
        List<PedidosDetalle> pedido_detalle;
+
+    public Integer getHielera_id() {
+        return hielera_id;
+    }
+
+    public void setHielera_id(Integer hielera_id) {
+        this.hielera_id = hielera_id;
+    }
        
     public Pedidos() {
     }

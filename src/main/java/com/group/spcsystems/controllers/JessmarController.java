@@ -76,24 +76,7 @@ public List<Pedidos> getListaPedidos(){
 return listapedidos;
 }
 
-//String  GET_LISTA_DE_PEDIDOS_FULL = "select p.id as id" +
-//                                    ",p.fechapedido as fechapedido " +
-//                                    ",p.usuario as usuario " +
-//                                    ",p.areaentrega as areaentrega " +
-//                                    ",tp.id as tipopedido_id " +
-//                                    ",tp.clave as tipoPedidoClave " +
-//                                    ",tp.descripcion as tipopedidodescripcion " +
-//                                    ",c.id as clientes_id " +
-//                                    ",c.nombre as clientenombre " +
-//                                    ",c.telefono as clienteTelefono " +
-//                                    ",v.id as vendedor_id " +
-//                                    ",v.clave as vendedorClave " +
-//                                    ",v.nombre as vendedornombre " +
-//                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
-//                                    "where p.tipopedido_id = tp.id " +
-//                                    "and p.clientes_id = c.id " +
-//                                    "and p.vendedor_id = v.id " +
-//                                    "order by p.id  desc ";
+
 String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
                                     ",p.status as status " +
                                     ",p.fechapedido as fechapedido " +
@@ -118,13 +101,17 @@ String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
                                     ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
                                     ",v.nombre as vendedornombre " +
+                                    ",hi.id as hielera_id " +
+                                    ",hi.clave as hileraclave " +
+                                    ",hi.descripcion as hieleradescripcion " +
                                     "from pedidos p " +
                                     "left join cattipopedido tp on  p.tipopedido_id = tp.id " +
-                                    "left join clientes c       on p.clientes_id = c.id  " +
-                                    "left join vendedores v     on p.vendedor_id = v.id " +
-                                    "left join usuarios ua      on  p.usrabrio_id = ua.id " +
-                                    "left join usuarios uc      on  p.usrcerro_id = uc.id " +
-                                    "left join usuarios ux      on  p.usrcancelo_id = ux.id " +
+                                    "left join clientes      c  on p.clientes_id = c.id  " +
+                                    "left join vendedores    v  on p.vendedor_id = v.id " +
+                                    "left join usuarios      ua on  p.usrabrio_id = ua.id " +
+                                    "left join usuarios      uc on  p.usrcerro_id = uc.id " +
+                                    "left join usuarios     ux  on  p.usrcancelo_id = ux.id " +
+                                    "left join hieleras      hi on  p.hielera_id = hi.id  " +
                                     "order by p.id  desc ";
         
         
@@ -623,6 +610,9 @@ String  GET_PEDIDOBYID =            "select p.id as id" +
                                     ",v.id as vendedor_id " +
                                     ",v.clave as vendedorClave " +
                                     ",v.nombre as vendedornombre " +
+                                    ",hi.id as hielera_id " + 
+                                    ",hi.clave as hileraclave  " +
+                                    ",hi.descripcion as hieleradescripcion " +
                                     "from pedidos p " +
                                     "left join cattipopedido tp on  p.tipopedido_id = tp.id " +
                                     "left join clientes c       on p.clientes_id = c.id  " +
@@ -630,26 +620,10 @@ String  GET_PEDIDOBYID =            "select p.id as id" +
                                     "left join usuarios ua      on  p.usrabrio_id = ua.id " +
                                     "left join usuarios uc      on  p.usrcerro_id = uc.id " +
                                     "left join usuarios ux      on  p.usrcancelo_id = ux.id " +
+                                    "left join hieleras hi      on  p.hielera_id = hi.id  " +
                                     "where p.id =  ";
 
-//String  GET_PEDIDOBYID =            "select p.id as id" +
-//                                    ",p.fechapedido as fechapedido " +
-//                                    ",p.usuario as usuario " +
-//                                    ",p.areaentrega as areaentrega " +
-//                                    ",tp.id as tipopedido_id " +
-//                                    ",tp.clave as tipoPedidoClave " +
-//                                    ",tp.descripcion as tipopedidodescripcion " +
-//                                    ",c.id as clientes_id " +
-//                                    ",c.nombre as clientenombre " +
-//                                    ",c.telefono as clienteTelefono " +
-//                                    ",v.id as vendedor_id " +
-//                                    ",v.clave as vendedorClave " +
-//                                    ",v.nombre as vendedornombre " +
-//                                    "from pedidos p, cattipopedido tp, clientes c, vendedores v " +
-//                                    "where p.tipopedido_id = tp.id " +
-//                                    "and p.clientes_id = c.id " +
-//                                    "and p.vendedor_id = v.id " +
-//                                    "and p.id = ";
+
 
 
 String  GET_PEDIDOSDETALLE =    "select pd.id as id  " +
@@ -748,12 +722,11 @@ public Map<String, Object> getPedidoById(String id){
 return resp;
 }
 
-//String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, fechapedido, usuario, clientes_id, vendedor_id,tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?)";
-//String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, fechapedido=?, usuario=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
+
   
 
-String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, status, fechapedido, usrabrio_id, clientes_id, vendedor_id, tipopedido_id, areaentrega) VALUES(?,?,?,?,?,?,?,?)";
-String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, status=?, fechapedido=?, fechacierre=?, fechacancelado=?, usrabrio_id=?, usrcerro_id=?, usrcancelo_id=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, areaentrega=? WHERE id=?";
+String  INSERT_PEDIDOS = "INSERT INTO pedidos(version, status, fechapedido, usrabrio_id, clientes_id, vendedor_id, tipopedido_id, hielera_id, areaentrega) VALUES(?,?,?,?,?,?,?,?,?)";
+String  UPDATE_PEDIDOS = "UPDATE pedidos SET version=?, status=?, fechapedido=?, fechacierre=?, fechacancelado=?, usrabrio_id=?, usrcerro_id=?, usrcancelo_id=?, clientes_id=?, vendedor_id=?, tipopedido_id=?, hielera_id=?, areaentrega=? WHERE id=?";
 String  INSERT_PEDIDODETALLE = "INSERT INTO pedidos_detalle(version, cantidad, total, precio, articulo_id, pedido_id ) VALUES (?,?,?,?,?,?)";
 String  UPDATE_PEDIDODETALLE = "UPDATE pedidos_detalle SET version=?, cantidad=?, total=?, precio=?, articulo_id=?, pedido_id=? WHERE id=?";  
         
@@ -777,6 +750,7 @@ public Map<String, Object> insertaPedido(Map elpedido){
        String  fechacancelado=  elpedido.get("fechacancelado") == null ? null : (String) elpedido.get("fechacancelado");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
        String  status        =  elpedido.get("status") == null ? "abierto"   : (String)elpedido.get("status");
        String areaentrega    =  (String)elpedido.get("areaentrega");
+       Integer hielera_id    =  elpedido.get("hielera_id") == null ? null        : (Integer)elpedido.get("hielera_id") ;
        List<Map<String, Object>> detalles = (List<Map<String, Object>>)elpedido.get("pedidosdetalle");
        
        if( !status.equals("abierto") &&  !status.equals("cerrado") &&  !status.equals("cancelado")){
@@ -863,13 +837,13 @@ public Map<String, Object> insertaPedido(Map elpedido){
                  int numrows; 
                  Long newid = 0L;
                 if( id != 0){ // Update
-                  
-                   numrows = queryRunner.update(dbCon, UPDATE_PEDIDOS , 0, status, fechapedido, fechacierre, fechacancelado, usrabrio_id, usrcerro_id, usrcancelo_id, clientes_id, vendedor_id, tipopedido_id, areaentrega, id);
+                                                                           
+                   numrows = queryRunner.update(dbCon, UPDATE_PEDIDOS , 0, status, fechapedido, fechacierre, fechacancelado, usrabrio_id, usrcerro_id, usrcancelo_id, clientes_id, vendedor_id,tipopedido_id, hielera_id, areaentrega, id);
                     payload.put("actualizados", numrows);
                 }
                 else{
-                   
-                     newid = queryRunner.insert(dbCon, INSERT_PEDIDOS , scalarHandler, 0, status, fechapedido, usrabrio_id, clientes_id, vendedor_id,tipopedido_id, areaentrega);
+                         
+                     newid = queryRunner.insert(dbCon, INSERT_PEDIDOS , scalarHandler, 0, status, fechapedido, usrabrio_id, clientes_id, vendedor_id,tipopedido_id, hielera_id, areaentrega);
                       payload.put("id", newid);
                 }
                 
@@ -2048,7 +2022,7 @@ public Map<String, Object> getListaHieleras(){
     
     
        
-       //Procedo a grbar el encabezado
+       //Procedo
        try{
      
 		dbCon = new JDBCUtils().connectDatabase();
@@ -2069,7 +2043,8 @@ public Map<String, Object> getListaHieleras(){
                         // cambiop fecha a Styring
                     
                         String sfechaadquisicion = sdf.format(elemento_h.get("fecha_adquisicion"));
-                        String sfechabaja = sdf.format(elemento_h.get("fecha_baja"));
+                        
+                        String sfechabaja = elemento_h.get("fecha_baja") == null ? null : sdf.format(elemento_h.get("fecha_baja") );
                         
                         elemento_h.remove("fecha_adquisicion");
                         elemento_h.put("fecha_adquisicion", sfechaadquisicion);
@@ -2135,7 +2110,7 @@ public Map<String, Object> getHieleraById(String id){
                         // modifico las fechas
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
                         String sfechaadquisicion = sdf.format(hielera.get("fecha_adquisicion"));
-                        String sfechabaja = sdf.format(hielera.get("fecha_baja"));                      
+                        String sfechabaja = hielera.get("fecha_baja") == null ? null : sdf.format(hielera.get("fecha_baja"));                      
                         hielera.remove("fecha_adquisicion");
                         hielera.put("fecha_adquisicion", sfechaadquisicion);                       
                         hielera.remove("fecha_baja");
@@ -2173,8 +2148,8 @@ public Map<String, Object> getHieleraById(String id){
 }
 
 
-String  INSERT_HIELERA = "INSERT INTO hieleras (version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
-String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? WHERE id=?";
+String  INSERT_HIELERA = "INSERT INTO hieleras (version, fecha_adquisicion, clave, descripcion, fecha_baja,activa, num_pedido_actual) VALUES(?,?,?,?,?,?,?)";
+String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? , num_pedido_actual=? WHERE id=?";
    
         
 public Map<String, Object> insertaHielera(Map lahielera){
@@ -2186,11 +2161,12 @@ public Map<String, Object> insertaHielera(Map lahielera){
     // Proceso el mapa de la hielera.
     // CABECERA
        Integer id                =  lahielera.get("id") == null ? 0 :   (Integer)lahielera.get("id");  // si viene es update si no viene o es cero es insert
-       String fecha_adquisicion  =  (String) lahielera.get("fecha_adquisicion");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
-       String clave              =  (String) lahielera.get("clave");
-       String descripcion        =  (String) lahielera.get("descripcion");
-       String fecha_baja         =  (String) lahielera.get("fecha_baja");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
-       Boolean activa            =   lahielera.get("activa")  == null ? false : (Boolean)lahielera.get("activa");
+       String fecha_adquisicion  =  (String)lahielera.get("fecha_adquisicion");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       String clave              =  (String)lahielera.get("clave");
+       String descripcion        =  (String)lahielera.get("descripcion");
+       String fecha_baja         =  lahielera.get("fecha_baja")        == null ? null  : (String) lahielera.get("fecha_baja");  // formato yyyy-MM-dd HH:mmm la hpra en foprmato de 24 horas
+       Boolean activa            =  lahielera.get("activa")            == null ? false : (Boolean)lahielera.get("activa");
+       Long num_pedido_actual    =  lahielera.get("num_pedido_actual") == null ? 0L    : new Long( (Integer)lahielera.get("num_pedido_actual"));
        
       
   
@@ -2201,7 +2177,7 @@ public Map<String, Object> insertaHielera(Map lahielera){
             return resp;
         }
        
-       if( ! GenericValidator.isDate(fecha_baja, "yyyy-MM-dd HH:mm", true) ){
+       if( fecha_baja != null && !GenericValidator.isDate(fecha_baja, "yyyy-MM-dd HH:mm", true) ){
             resp.put("success", Boolean.FALSE);
             resp.put("erromsg", "fecha baja invalida");
             resp.put("payload", null);
@@ -2219,13 +2195,13 @@ public Map<String, Object> insertaHielera(Map lahielera){
                 
                  int numrows; 
                  Long newid = 0L;
-                if( id != 0){ // Update String  UPDATE_HIELERA = "UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? WHERE id=?";
-                   numrows = queryRunner.update(dbCon, UPDATE_HIELERA , 0,fecha_adquisicion, clave, descripcion, fecha_baja, activa, id);
+                if( id != 0){ // UPDATE hieleras SET version=?, fecha_adquisicion=?, clave=?, descripcion=?, fecha_baja=?, activa=? , num_pedido_actual =? WHERE id=?;
+                   numrows = queryRunner.update(dbCon, UPDATE_HIELERA , 0,fecha_adquisicion, clave, descripcion, fecha_baja, activa, num_pedido_actual, id);
                     payload.put("actualizados", numrows);
                 }
                 else{
-                   // insert String  INSERT_HIELERA = "INSERT INTO pedidos(version, fecha_adquisicion, clave, descripcion, fecha_baja,activa) VALUES(?,?,?,?,?,?)";
-                     newid = queryRunner.insert(dbCon, INSERT_HIELERA , scalarHandler, 0, fecha_adquisicion, clave, descripcion, fecha_baja, activa);
+                   // INSERT INTO hieleras (version, fecha_adquisicion, clave, descripcion, fecha_baja,activa, num_pedido_actual) VALUES(?,?,?,?,?,?,?)
+                     newid = queryRunner.insert(dbCon, INSERT_HIELERA , scalarHandler, 0, fecha_adquisicion, clave, descripcion, fecha_baja, activa, num_pedido_actual);
                      payload.put("id", newid);
                 }
                       
@@ -2507,7 +2483,7 @@ public Map<String, Object> insertaPrecioArticuloCliente(Map preciarticulocleinte
     Map<String, Object> resp = new HashMap<String, Object> ();
     Map<String, Object> payload = new HashMap<String, Object> ();
     ScalarHandler<Long> scalarHandler = new ScalarHandler<Long>(); // paraa qyue obtenga el id
-    // Proceso el mapa de la hielera.
+    
     // CABECERA
        Integer id           = preciarticulocleinte.get("id")          == null ? 0    : (Integer)preciarticulocleinte.get("id");  // si viene es update si no viene o es cero es insert
        Double precio        = preciarticulocleinte.get("precio")      == null ? 0.00 : (Double)preciarticulocleinte.get("precio");            
