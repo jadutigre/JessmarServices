@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.group.spcsystems.controllers;
 
 import Tool.JDBCUtils;
@@ -194,7 +195,7 @@ public Map<String, Object> getListaPedidoFull(){
             resp.put("payload", null);        
         }finally{
 
-            if(dbCon!=null){
+            if(dbCon!=null) {
                  try{
                      dbCon.close();
                  }catch(SQLException sqle){
@@ -651,11 +652,11 @@ String  GET_PEDIDOBYID =            "select p.id as id" +
 //                                    "and p.id = ";
 
 
-String  GET_PEDIDOSDETALLE =    "select pd.id as id " +
-                                ",pd.cantidad as cantidad " +
-                                ",pd.total as total " +
-                                ",pd.precio as precio " +
-                                ",pd.pedido_id as pedido_id"+
+String  GET_PEDIDOSDETALLE =    "select pd.id as id  " +
+                                ",pd.cantidad as cantidad  " +
+                                ",pd.total as total  " +
+                                ",pd.precio as precio  " +
+                                ",pd.pedido_id as pedido_id "+
                                 ",a.id as articulo_id " +
                                 ",a.codigo as articuloCodigo " +
                                 ",a.descripcion as articulodescripcion " +
