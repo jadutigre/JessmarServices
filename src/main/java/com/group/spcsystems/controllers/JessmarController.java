@@ -82,10 +82,10 @@ String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
                                     ",p.fechapedido as fechapedido " +
                                     ",p.fechacancelado as fechacancelado " +
                                     ",p.fechacierre as fechacierre " +
-                                    ",ua.id as usuarioabre_id "  +
+                                    ",ua.id as usrabrio_id "  +
                                     ",ua.usuario as usuarioabre " +
                                     ",ua.nombre as usuarioabrenombre " +
-                                    ",uc.id as usuariocierra_id " +
+                                    ",uc.id as usrcerro_id " +
                                     ",uc.usuario as usuariocierra " +
                                     ",uc.nombre as usuariocierranombre " +
                                     ",ux.id as usuariocancela_id " +
@@ -591,10 +591,10 @@ String  GET_PEDIDOBYID =            "select p.id as id" +
                                     ",p.fechapedido as fechapedido " +
                                     ",p.fechacancelado as fechacancelado " +
                                     ",p.fechacierre as fechacierre " +
-                                    ",ua.id as usuarioabre_id "  +
+                                    ",ua.id as usrabrio_id "  +
                                     ",ua.usuario as usuarioabre " +
                                     ",ua.nombre as usuarioabrenombre " +
-                                    ",uc.id as usuariocierra_id " +
+                                    ",uc.id as usrcerro_id " +
                                     ",uc.usuario as usuariocierra " +
                                     ",uc.nombre as usuariocierranombre " +
                                     ",ux.id as usuariocancela_id " +
