@@ -41,14 +41,16 @@ public class JessmarService {
     @POST
     @Path("/getListaPedidos")
     @Produces("application/json")
-    public Response getListaPedidos() {  
+    public Response getListaPedidos(
+     @FormParam("status") String estatus
+    ) {  
         
           List<Pedidos> pedidos = new ArrayList<Pedidos>();
           Map<String, Object> resp = new HashMap<String, Object> ();
           
           try{
               JessmarController controller = new JessmarController();
-            pedidos = controller.getListaPedidos();
+              pedidos = controller.getListaPedidos(estatus);
           }catch(Exception ex){
                 resp.put("success", Boolean.FALSE);
                 resp.put("erromsg", ex.getMessage());
@@ -64,14 +66,16 @@ public class JessmarService {
     @POST
     @Path("/getListaPedidosFull")
     @Produces("application/json")
-    public Response getListaPedidosFull() {  
+    public Response getListaPedidosFull(
+     @FormParam("status") String estatus
+    ) {  
         
           Map<String, Object> pedidos = new HashMap<String, Object> ();
           Map<String, Object> resp = new HashMap<String, Object> ();
           
           try{
               JessmarController controller = new JessmarController();
-            pedidos = controller.getListaPedidoFull();
+            pedidos = controller.getListaPedidoFull(estatus);
           }catch(Exception ex){
                 resp.put("success", Boolean.FALSE);
                 resp.put("erromsg", ex.getMessage());
