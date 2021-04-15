@@ -117,8 +117,7 @@ String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
                                     "left join usuarios      uc on  p.usrcerro_id = uc.id " +
                                     "left join usuarios     ux  on  p.usrcancelo_id = ux.id " +
                                     "left join hieleras      hi on  p.hielera_id = hi.id  "
-        + " where p.status='abierto' " +
-                                    "order by p.id  desc ";
+                                    + " where p.status='abierto' " ;
 String ORDER_BY =  "order by p.id  desc ";
 String WHERE    = "where status = ? ";
         
