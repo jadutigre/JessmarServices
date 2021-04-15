@@ -116,19 +116,54 @@ String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
                                     "left join usuarios      ua on  p.usrabrio_id = ua.id " +
                                     "left join usuarios      uc on  p.usrcerro_id = uc.id " +
                                     "left join usuarios     ux  on  p.usrcancelo_id = ux.id " +
-                                    "left join hieleras      hi on  p.hielera_id = hi.id  "
-        + " where p.status='abierto' " +
-                                    "order by p.id  desc ";
-String ORDER_BY =  "order by p.id  desc ";
-String WHERE    = "where status = ? ";
+                                    "left join hieleras      hi on  p.hielera_id = hi.id  " ;
+                                   // + " where p.status='abierto' " +
+                                   // "order by p.id  desc ";
+
+String WHERE    = " where p.status = 'abierto' ";
+String ORDER_BY =  " order by p.id  desc ";
+
+
+
         
         
-public Map<String, Object> getListaPedidoFull( String estatus){
+public Map<String, Object> getListaPedidoFull( String estatus, String finicial, String ffinal){
     
-     Connection dbCon = null;
-    Map<String, Object> resp = new HashMap<String, Object> ();
+   Connection dbCon = null;
+   Map<String, Object> resp = new HashMap<String, Object> ();
    List<Map<String, Object>> listapedidos = new ArrayList<Map<String, Object>>();
     
+   String WHERE_FECHAS = " where status = ? and fechapedido between ? and ? ";
+   String ORDER_BY_FECHAS = " order by fechapedido  desc, id desc";
+   
+   // SI una de las fecha no se da, solo rregresarw un dia.
+   if( ffinal == null)
+       ffinal = finicial;
+     
+    if( finicial == null)    
+        finicial = ffinal;
+    
+    if(finicial == ffinal && finicial != null){
+        finicial = finicial + " 00:00:00";
+        ffinal = ffinal + " 23:59:59";
+    }
+    
+    
+    
+    if( estatus != null || finicial != null){
+        if(estatus == null && finicial != null){  // fechas no nulas
+            estatus = "abierto";
+            WHERE_FECHAS =  " where status = ? and fechapedido between ? and ? " ;
+            ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+        }
+        else if(estatus != null && finicial != null){      // fechas nulas y estatus no nulo
+            WHERE_FECHAS =  " where status = ? and fechapedido between ? and ? ";
+            ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+        }else if(estatus != null && finicial == null){
+            WHERE_FECHAS =  " where status = ?  ";
+            ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+        }
+    }
     
        
        //Procedo a grbar el encabezado
@@ -137,10 +172,14 @@ public Map<String, Object> getListaPedidoFull( String estatus){
 		dbCon = new JDBCUtils().connectDatabase();
                 QueryRunner queryRunner = new QueryRunner();
                 
-                if(estatus == null){
-                    listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL + ORDER_BY, new MapListHandler() );
+                if(estatus == null && finicial == null  ){
+                    listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL + WHERE + ORDER_BY, new MapListHandler() );
+                }else if(finicial == null){
+                    
+                    listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL + WHERE_FECHAS +  ORDER_BY_FECHAS, new MapListHandler(), estatus );
                 }else{
-                    listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL + WHERE +  ORDER_BY, new MapListHandler(), estatus );
+                    
+                    listapedidos = queryRunner.query(dbCon, GET_LISTA_DE_PEDIDOS_FULL + WHERE_FECHAS +  ORDER_BY_FECHAS, new MapListHandler(), estatus, finicial, ffinal );
                 } 
                 
                 
