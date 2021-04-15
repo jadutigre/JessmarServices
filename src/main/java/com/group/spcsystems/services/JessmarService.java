@@ -67,15 +67,19 @@ public class JessmarService {
     @Path("/getListaPedidosFull")
     @Produces("application/json")
     public Response getListaPedidosFull(
-     @FormParam("status") String estatus
+    @FormParam("status") String estatus,
+    @FormParam("finicial") String finicial,
+    @FormParam("ffinal") String ffinal
     ) {  
         
           Map<String, Object> pedidos = new HashMap<String, Object> ();
           Map<String, Object> resp = new HashMap<String, Object> ();
           
+          System.out.print("");
+          
           try{
               JessmarController controller = new JessmarController();
-            pedidos = controller.getListaPedidoFull(estatus);
+            pedidos = controller.getListaPedidoFull(estatus, finicial, ffinal);
           }catch(Exception ex){
                 resp.put("success", Boolean.FALSE);
                 resp.put("erromsg", ex.getMessage());
