@@ -26,8 +26,19 @@ public class Pedidos {
        String fechacierre;      //Formato "yyyy-MM-dd HH:mm" 
        String fechacancelado;   //Formato "yyyy-MM-dd HH:mm"
        Integer hielera_id;
-       
+       Double totalpedido;     // Total actual del pedido
+
+  
        List<PedidosDetalle> pedido_detalle;
+       
+    public Double getTotalpedido() {
+        return totalpedido;
+    }
+
+    public void setTotalpedido(Double totalpedido) {
+        this.totalpedido = totalpedido;
+    }
+       
 
     public Integer getHielera_id() {
         return hielera_id;

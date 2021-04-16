@@ -83,6 +83,7 @@ return listapedidos;
 
 
 String  GET_LISTA_DE_PEDIDOS_FULL ="select p.id as id" +
+                                    ",IFNULL((select sum(pd.total) from pedidos_detalle as pd where pd.pedido_id = p.id),0) as totalpedido " +
                                     ",p.status as status " +
                                     ",p.fechapedido as fechapedido " +
                                     ",p.fechacancelado as fechacancelado " +
