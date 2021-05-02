@@ -128,6 +128,15 @@ String ORDER_BY =  " order by p.id  desc ";
         
 public Map<String, Object> getListaPedidoFull( String estatus, String finicial, String ffinal){
     
+   if(estatus.isEmpty())
+         estatus=null;
+   
+   if(finicial.isEmpty())
+         finicial=null;
+   
+      if(ffinal.isEmpty())
+         ffinal=null;
+    
    Connection dbCon = null;
    Map<String, Object> resp = new HashMap<String, Object> ();
    List<Map<String, Object>> listapedidos = new ArrayList<Map<String, Object>>();
@@ -142,7 +151,7 @@ public Map<String, Object> getListaPedidoFull( String estatus, String finicial, 
     if( finicial == null)    
         finicial = ffinal;
     
-    if(finicial == ffinal && finicial != null){
+    if(finicial != null && finicial.equals(ffinal) ){
         finicial = finicial + " 00:00:00";
         ffinal = ffinal + " 23:59:59";
     }
@@ -151,16 +160,31 @@ public Map<String, Object> getListaPedidoFull( String estatus, String finicial, 
     
     if( estatus != null || finicial != null){
         if(estatus == null && finicial != null){  // fechas no nulas
+            
             estatus = "abierto";
             WHERE_FECHAS =  " where status = ? and fechapedido between ? and ? " ;
             ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+            
         }
         else if(estatus != null && finicial != null){      // fechas nulas y estatus no nulo
-            WHERE_FECHAS =  " where status = ? and fechapedido between ? and ? ";
-            ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+            
+            if(estatus.equals("abierto")){
+                WHERE_FECHAS =  " where status = ? and fechapedido between ? and ? ";
+                ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+            }else if(estatus.equals("cerrado")){
+                WHERE_FECHAS =  " where status = ? and fechacierre between ? and ? ";
+                ORDER_BY_FECHAS = " order by fechacierre  asc, id asc";
+            }if(estatus.equals("cancelado")){
+                WHERE_FECHAS =  " where status = ? and fechacancelado between ? and ? ";
+                ORDER_BY_FECHAS = " order by fechacancelado  asc, id asc";
+            }
+            
         }else if(estatus != null && finicial == null){
+            
             WHERE_FECHAS =  " where status = ?  ";
             ORDER_BY_FECHAS = " order by fechapedido  asc, id asc";
+            
+            
         }
     }
     
@@ -203,7 +227,7 @@ public Map<String, Object> getListaPedidoFull( String estatus, String finicial, 
                     if(fechaobj == null){
                         pedido.put("fechacancelado", null);
                     }else{
-                        String sfechacancelado = sdf.format(pedido.get("fechacancelado"));           
+                        String sfechacancelado = sdf.format(fechaobj);           
                         pedido.put("fechacancelado", sfechacancelado);
                     }
                     
@@ -902,10 +926,28 @@ public Map<String, Object> insertaPedido(Map elpedido){
                if(detalles != null && !detalles.isEmpty()){
                   for(Map<String, Object> det : detalles){
                         Integer elidDet =     det.get("id")          == null ? 0 : (Integer)det.get("id"); 
-                        Integer articulo_id = det.get("articulo_id") == null ? 0    : (Integer)det.get("articulo_id");                    
-                        Double cantidad =     det.get("cantidad")    == null ? 0.00 : (Double)det.get("cantidad");;
-                        Double precio =       det.get("precio")      == null ? 0.00 : (Double)det.get("precio");
-                        Double total =        det.get("total")       == null ? 0.00 : (Double)det.get("total");
+                        Integer articulo_id = det.get("articulo_id") == null ? 0    : (Integer)det.get("articulo_id");   
+                        
+                        Double cantidad = 0.0;
+                        if(det.get("cantidad") instanceof Integer){
+                            cantidad =     det.get("cantidad")    == null ? 0.00 :  new Double((Integer)det.get("cantidad")) ;
+                        }else if(det.get("cantidad") instanceof Double){
+                            cantidad =     det.get("cantidad")    == null ? 0.00 :  (Double)det.get("cantidad") ;
+                        }
+                        
+                        Double precio = 0.0;
+                        if( det.get("precio") instanceof Integer){
+                            precio =       det.get("precio")      == null ? 0.00 : new Double((Integer)det.get("precio"));
+                        }else if(det.get("precio") instanceof Double){
+                            precio =       det.get("precio")      == null ? 0.00 : (Double)det.get("precio");
+                        }    
+                        
+                        Double total = 0.0;
+                        if( det.get("total") instanceof Integer){
+                            total =        det.get("total")       == null ? 0.00 : new Double((Integer)det.get("total"));
+                        }else if(det.get("total") instanceof Double){
+                            total =        det.get("total")       == null ? 0.00 : (Double)det.get("total");                            
+                        }
                         
                         if(id == 0){  // Es  insercion de maestro, tambien inserto todos los detALLESdetalles
                             queryRunner.insert(dbCon, INSERT_PEDIDODETALLE, scalarHandler , 0, cantidad, total, precio, articulo_id, newid);
@@ -929,6 +971,7 @@ public Map<String, Object> insertaPedido(Map elpedido){
                
         }catch(Exception e){
             //procedo roolback
+            e.printStackTrace();
             DbUtils.rollbackAndCloseQuietly(dbCon);
             resp.put("success", Boolean.FALSE);
             resp.put("erromsg", e.getMessage());
@@ -1358,6 +1401,7 @@ public Map<String, Object> insertaCliente(Map elcliente){
                 resp.put("payload", payload);
                
         }catch(Exception e){
+            e.printStackTrace();
             //procedo roolback
             DbUtils.rollbackAndCloseQuietly(dbCon);
             resp.put("success", Boolean.FALSE);
@@ -1412,8 +1456,8 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
     String  parte       = elarticulo.get("parte")           == null ? ""   : (String)elarticulo.get("parte");
     String  estatus     = elarticulo.get("estatus")         == null ? ""   : (String)elarticulo.get("estatus");
     String  codant      = elarticulo.get("codant")          == null ? ""   : (String)elarticulo.get("codant");
-    Double  minimo      = elarticulo.get("minimo")          == null ? 0.0   : (Double)elarticulo.get("minimo");
-    Double  maximo      = elarticulo.get("maximo")          == null ? 0.0   : (Double)elarticulo.get("maximo");
+    Double  minimo      = elarticulo.get("minimo")          == null ? 0.0   : ((elarticulo.get("minimo") instanceof Integer)?  new Double((Integer)elarticulo.get("minimo")) : (Double)elarticulo.get("minimo") ) ;
+    Double  maximo      = elarticulo.get("maximo")          == null ? 0.0   : ((elarticulo.get("maximo") instanceof Integer)?  new Double((Integer)elarticulo.get("maximo")) : (Double)elarticulo.get("maximo") ) ;
     String  codigo      = elarticulo.get("codigo")          == null ? ""   : (String)elarticulo.get("codigo");
     Double  valorutmin  = elarticulo.get("valorutmin")      == null ? 0.0   : (Double)elarticulo.get("valorutmin");
     Double  valorutsug  = elarticulo.get("valorutsug")      == null ? 0.0   : (Double)elarticulo.get("valorutsug");
@@ -1421,7 +1465,7 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
     Boolean activo      = elarticulo.get("activo")          == null ? false : (Boolean)elarticulo.get("activo");
     String  cvesat      = elarticulo.get("cvesat")          == null ? ""   : (String)elarticulo.get("cvesat");
     String  unidadsat      = elarticulo.get("unidadsat")    == null ? ""   : (String)elarticulo.get("unidadsat");
-    Double  prorden      = elarticulo.get("prorden")        == null ? 0.0   : (Double)elarticulo.get("prorden");
+    Double  prorden      = elarticulo.get("prorden")        == null ? 0.0   : ((elarticulo.get("prorden") instanceof Integer)?  new Double((Integer)elarticulo.get("prorden")) : (Double)elarticulo.get("prorden") ) ; 
     
  
        
@@ -1454,6 +1498,7 @@ public Map<String, Object> insertaArticulo(Map elarticulo){
                 resp.put("payload", payload);
                
         }catch(Exception e){
+            e.printStackTrace();
             //procedo roolback
             DbUtils.rollbackAndCloseQuietly(dbCon);
             resp.put("success", Boolean.FALSE);
@@ -2537,7 +2582,7 @@ public Map<String, Object> insertaPrecioArticuloCliente(Map preciarticulocleinte
     
     // CABECERA
        Integer id           = preciarticulocleinte.get("id")          == null ? 0    : (Integer)preciarticulocleinte.get("id");  // si viene es update si no viene o es cero es insert
-       Double precio        = preciarticulocleinte.get("precio")      == null ? 0.00 : (Double)preciarticulocleinte.get("precio");            
+       Double precio        = preciarticulocleinte.get("precio")      == null ? 0.00 : (preciarticulocleinte.get("precio") instanceof Integer )?new Double((Integer)preciarticulocleinte.get("precio")):(Double)preciarticulocleinte.get("precio");            
        Integer articulo_id  = preciarticulocleinte.get("articulo_id") == null ? 0    : (Integer)preciarticulocleinte.get("articulo_id"); 
        Integer cliente_id   = preciarticulocleinte.get("cliente_id")  == null ? 0    : (Integer)preciarticulocleinte.get("cliente_id"); 
        
